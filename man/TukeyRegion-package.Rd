@@ -20,8 +20,8 @@ For cumputation of Tukey depth see function \code{\link{depth.halfspace}} of pac
 \tabular{ll}{
 Package: \tab TukeyRegion\cr
 Type: \tab Package\cr
-Version: \tab 0.1.0\cr
-Date: \tab 2017-12-07\cr
+Version: \tab 0.1.1\cr
+Date: \tab 2017-01-03\cr
 License: \tab GPL (>= 3) | file LICENSE\cr
 }
 
@@ -29,7 +29,7 @@ License: \tab GPL (>= 3) | file LICENSE\cr
 
 \author{
 Authors: 
-C. Bradford Barber [aut, cph], The Geometry Center University of Minnesota [cph], Andrew Makhorin [aut, cph], Timothy A. Davis [aut, cph], Patrick R. Amestoy [aut, cph], Iain S. Duff [aut, cph], John K. Reid [aut, cph], Stefan I. Larimore [aut], Jean-loup Gailly [aut, cph], Mark Adler [aut, cph], Niklas Sorensson [aut, cph], Giorgio Sartor [aut], Heinrich Schuchardt [aut], Cosmin Truta [ctb], Alan Mishchenko [ctb], Tamas Badics [ctb], Pavlo Mozharovskyi [aut, cre]
+Pavlo Mozharovskyi [aut, cre], C.B. Barber [aut, cph], The Geometry Center University of Minnesota [cph]
 
 Maintainer: Pavlo Mozharovskyi, <pavlo.mozharovskyi@ensai.fr>
 }

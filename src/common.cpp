@@ -729,64 +729,128 @@ void genNormDevs(unsigned int n, double mu, double sigma, TPoint *devs){
   }
 }
 
-/* Solve a linear programming problem                                         */
+/* Solve a linear programming problem using glpk                              */
 int solveLP(TPoint &obj, TMatrix &A, TPoint &b, TPoint *result){
-  // Create LP-structures
-  glp_prob *lp;
-  lp = glp_create_prob();
-  glp_term_out(GLP_OFF);
-  // Add rows
+  // Prepare the environment
+  Environment Rglpk_env("package:Rglpk");
+  Function Rglpk_Rglpk_solve_LP = Rglpk_env["Rglpk_solve_LP"];
+  // Transform the problem to the Rglpk-format:
+  // 1. Create the structures
   int nrow = A.size();
-  glp_add_rows(lp, nrow);
-  for (int i = 0; i < nrow; i++){
-    glp_set_row_bnds(lp, i + 1, GLP_UP, b[i], b[i]);
-  }
-  // Add columns
   int ncol = A[0].size();
-  glp_add_cols(lp, ncol);
+  NumericVector Rglpk_obj = NumericVector(ncol);
+  NumericMatrix Rglpk_mat = NumericMatrix(nrow, ncol);
+  CharacterVector Rglpk_dir = CharacterVector(nrow);
+  NumericVector Rglpk_rhs = NumericVector(nrow);
+  List Rglpk_bounds = List::create();
+  NumericVector lower_ind = NumericVector(ncol);
+  NumericVector lower_val = NumericVector(ncol);
+  NumericVector upper_ind = NumericVector(ncol);
+  NumericVector upper_val = NumericVector(ncol);
+  // 2. Fill the structures
   for (int i = 0; i < ncol; i++){
-    glp_set_col_bnds(lp, i + 1, GLP_FR, 0., 0.);
-    glp_set_obj_coef(lp, i + 1, obj[i]);
+    Rglpk_obj(i) = obj[i];
+    lower_ind(i) = i + 1;
+    lower_val(i) = R_NegInf;
+    upper_ind(i) = i + 1;
+    upper_val(i) = R_PosInf;
   }
-  // Set constraint matrix
-  int ne = nrow * ncol;
-  int *rowIndices = new int[ne];
-  int *colIndices = new int[ne];
-  double *values = new double[ne];
   for (int i = 0; i < nrow; i++){
+    Rglpk_dir(i) = "<=";
+    Rglpk_rhs(i) = b[i];
     for (int j = 0; j < ncol; j++){
-      rowIndices[i * ncol + j] = i + 1;
-      colIndices[i * ncol + j] = j + 1;
-      values[i * ncol + j] = A[i][j];
+      Rglpk_mat(i,j) = A[i][j];
     }
   }
-  // Set the direction of optimization
-  glp_set_obj_dir(lp, GLP_MAX);
-  // Load constraint matrix
-  glp_load_matrix(lp, ne, &rowIndices[-1], &colIndices[-1], &values[-1]);
-  // Execute linear solver
-  glp_simplex(lp, NULL);
-  // Collect the result
-  delete[] rowIndices;
-  delete[] colIndices;
-  delete[] values;
-  if (glp_get_status(lp) == GLP_OPT){
+  // 3. Create the list of bounds
+  List bounds_lower = List::create();
+  bounds_lower.push_back(lower_ind, "ind");
+  bounds_lower.push_back(lower_val, "val");
+  List bounds_upper = List::create();
+  bounds_upper.push_back(upper_ind, "ind");
+  bounds_upper.push_back(upper_val, "val");
+  Rglpk_bounds.push_back(bounds_upper, "upper");
+  Rglpk_bounds.push_back(bounds_lower, "lower");
+  // // The call itself
+  List lps = Rglpk_Rglpk_solve_LP(Rglpk_obj, Rglpk_mat, Rglpk_dir, Rglpk_rhs, 
+                                  Rglpk_bounds);
+  // Extract the solution
+  Rcout << "Status:" << as<int>(lps["status"]) << std::endl;
+  if (as<int>(lps["status"]) == 0){
     result->resize(ncol);
     for (int i = 0; i < ncol; i++){
-      (*result)[i] = glp_get_col_prim(lp, i + 1);
+      (*result)[i] = as<NumericVector>(lps["solution"])(i);
     }
-    //Rcout << "Row statuses: ";
-    //for (int i = 0; i < nrow; i++){
-    //  Rcout << glp_get_row_stat(lp, i + 1) << "(" << glp_get_row_prim(lp, i + 1) << ") ";
-    //}
-    //Rcout << endl;
-    glp_delete_prob(lp);
-    return 0; // success
+    return 0;
   }else{
-    glp_delete_prob(lp);
-    return -1; // fail
+    return -1;
   }
 }
+
+//bounds <- list(lower = list(ind = c(1L, 3L), val = c(-Inf, 2)), 
+//               upper = list(ind = c(1L, 2L), val = c(4, 100))) 
+//  Rglpk_solve_LP(obj, mat, dir, rhs, types, max, bounds) 
+//https://www.rdocumentation.org/packages/Rglpk/versions/0.6-3/topics/Rglpk_solve_LP
+
+/* Solve a linear programming problem                                         */
+// int _solveLP(TPoint &obj, TMatrix &A, TPoint &b, TPoint *result){
+//   // Create LP-structures
+//   glp_prob *lp;
+//   lp = glp_create_prob();
+//   glp_term_out(GLP_OFF);
+//   // Add rows
+//   int nrow = A.size();
+//   glp_add_rows(lp, nrow);
+//   for (int i = 0; i < nrow; i++){
+//     glp_set_row_bnds(lp, i + 1, GLP_UP, b[i], b[i]);
+//   }
+//   // Add columns
+//   int ncol = A[0].size();
+//   glp_add_cols(lp, ncol);
+//   for (int i = 0; i < ncol; i++){
+//     glp_set_col_bnds(lp, i + 1, GLP_FR, 0., 0.);
+//     glp_set_obj_coef(lp, i + 1, obj[i]);
+//   }
+//   // Set constraint matrix
+//   int ne = nrow * ncol;
+//   int *rowIndices = new int[ne];
+//   int *colIndices = new int[ne];
+//   double *values = new double[ne];
+//   for (int i = 0; i < nrow; i++){
+//     for (int j = 0; j < ncol; j++){
+//       rowIndices[i * ncol + j] = i + 1;
+//       colIndices[i * ncol + j] = j + 1;
+//       values[i * ncol + j] = A[i][j];
+//     }
+//   }
+//   // Set the direction of optimization
+//   glp_set_obj_dir(lp, GLP_MAX);
+//   // Load constraint matrix
+//   glp_load_matrix(lp, ne, &rowIndices[-1], &colIndices[-1], &values[-1]);
+//   // Execute linear solver
+//   glp_simplex(lp, NULL);
+//   // Collect the result
+//   delete[] rowIndices;
+//   delete[] colIndices;
+//   delete[] values;
+//   Rcout << "StatusC:" << glp_get_status(lp) << std::endl;
+//   if (glp_get_status(lp) == GLP_OPT){
+//     result->resize(ncol);
+//     for (int i = 0; i < ncol; i++){
+//       (*result)[i] = glp_get_col_prim(lp, i + 1);
+//     }
+//     //Rcout << "Row statuses: ";
+//     //for (int i = 0; i < nrow; i++){
+//     //  Rcout << glp_get_row_stat(lp, i + 1) << "(" << glp_get_row_prim(lp, i + 1) << ") ";
+//     //}
+//     //Rcout << endl;
+//     glp_delete_prob(lp);
+//     return 0; // success
+//   }else{
+//     glp_delete_prob(lp);
+//     return -1; // fail
+//   }
+// }
 
 int initRidges(TMatrix &X, int intTau, int method, int nRidges, 
                vector<TVariables*> &ridges){

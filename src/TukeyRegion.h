@@ -1,6 +1,6 @@
 // TukeyRegion.h
 // By Pavlo Mozharovskyi
-// Last changed 06.12.2017
+// Last changed 02.01.2018
 // Header to C++-callable functions for the Tukey region and its elements
 
 #pragma once
@@ -17,7 +17,7 @@ using namespace std;
 extern "C"{
 #include "libqhull.h"
 #include "qhull_a.h"
-#include "glpk.h"
+//#include "glpk.h"
 }
 
 #include "common.h"
