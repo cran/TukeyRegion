@@ -1,10 +1,7 @@
-This package is available under GPL (>= 3).
-
-
-All files in src/libqhull are taken from or based on Qhull
-(http://www.qhull.org/), and covered by the following license:
-
-All files in src/libqhull/ are taken from or based on
+This package includes 3rd party open source software component 
+Qhull (http://www.qhull.org/), which is - with tiny  modifications to files 
+"mem.h", "usermem.c", "userprintf.c", and "userprintf_rbox.c" - located in the 
+directory src/libqhull and is covered by the following copyright:
 
                     Qhull, Copyright (c) 1993-2015
                     

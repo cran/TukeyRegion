@@ -1,6 +1,6 @@
 // hypermatrix.h
 // By Pavlo Mozharovskyi
-// Last changed 27.05.2014
+// Last changed 11.01.2018
 // A binary hypermatrix that contains acsendingly indexed cells only as bits
 
 template<typename BlockType> class binaryHypermatrixCmb{
@@ -15,7 +15,7 @@ public:
 	bool setIfNotSet(vector<int>);
 	void free(){
 		if (this->body){
-			delete this->body;
+			delete[] this->body;
 			this->body = NULL;
 		}
 	}

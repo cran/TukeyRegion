@@ -20,16 +20,16 @@ For cumputation of Tukey depth see function \code{\link{depth.halfspace}} of pac
 \tabular{ll}{
 Package: \tab TukeyRegion\cr
 Type: \tab Package\cr
-Version: \tab 0.1.1\cr
-Date: \tab 2017-01-03\cr
-License: \tab GPL (>= 3) | file LICENSE\cr
+Version: \tab 0.1.2\cr
+Date: \tab 2018-01-16\cr
+License: \tab GPL (>= 3)\cr
 }
 
 }
 
 \author{
 Authors: 
-Pavlo Mozharovskyi [aut, cre], C.B. Barber [aut, cph], The Geometry Center University of Minnesota [cph]
+C.B. Barber [aut, cph] (Qhull library), The Geometry Center of University of Minnesota [cph]  (Qhull library), Pavlo Mozharovskyi [aut, cre]
 
 Maintainer: Pavlo Mozharovskyi, <pavlo.mozharovskyi@ensai.fr>
 }
