@@ -2,11 +2,11 @@
 \alias{TukeyRegion}
 \title{Computation of the Tukey Region}
 \usage{
-TukeyRegion(data, depth, method = "bfs", 
-  trgFacets = FALSE, checkInnerPoint = TRUE, 
-  retHalfspaces = TRUE, retHalfspacesNR = FALSE, 
-  retInnerPoint = FALSE, retVertices = FALSE, 
-  retFacets = FALSE, retVolume = FALSE, retBarycenter = FALSE, 
+TukeyRegion(data, depth, method = "bfs",
+  trgFacets = FALSE, checkInnerPoint = TRUE,
+  retHalfspaces = TRUE, retHalfspacesNR = FALSE,
+  retInnerPoint = FALSE, retVertices = FALSE,
+  retFacets = FALSE, retVolume = FALSE, retBarycenter = FALSE,
   halfspaces = matrix(0), innerPoint = numeric(1),
   verbosity = 0L)
 }
@@ -113,7 +113,8 @@ the barycenter of the Tukey region. If the field is absent then either no halfsp
 }
 }
 \references{
-Liu, X., Mosler, K., and Mozharovskyi, P. (2017). Fast computation of Tukey trimmed regions and median in dimension p > 2. \href{https://arxiv.org/abs/1412.5122}{\code{arXiv:1412.5122}}.
+Liu, X., Mosler, K., and Mozharovskyi, P. (2019). Fast computation of Tukey trimmed regions and median in dimension p > 2. \emph{Journal of Computational and Graphical Statistics}, 28, 682-697.
+
 }
 \author{
 Pavlo Mozharovskyi <pavlo.mozharovskyi@ensai.fr>
@@ -127,10 +128,10 @@ require(TukeyRegion)
 require(MASS)
 # Generate data
 set.seed(1)
-X <- mvrnorm(500, rep(0, 3), 
+X <- mvrnorm(500, rep(0, 3),
   matrix(c(1, 1, 1, 1, 2, 2, 1, 2, 4), nrow = 3))
 # Compute the Tukey region
-Tr <- TukeyRegion(X, 10, "bfs", 
+Tr <- TukeyRegion(X, 10, "bfs",
   retFacets = TRUE, retVolume = TRUE, retBarycenter = TRUE)
 summary(Tr)
 # Visualize the Tukey region

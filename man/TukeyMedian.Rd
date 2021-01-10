@@ -2,9 +2,9 @@
 \alias{TukeyMedian}
 \title{Computation of the Tukey median set and Tukey median}
 \usage{
-TukeyMedian(data, algMedian = "bsbarydepth", method = "bfs", 
-  trgFacets = TRUE, retHalfspaces = FALSE, retHalfspacesNR = FALSE, 
-  retInnerPoint = FALSE, retVertices = TRUE, retFacets = TRUE, 
+TukeyMedian(data, algMedian = "bsbarydepth", method = "bfs",
+  trgFacets = TRUE, retHalfspaces = FALSE, retHalfspacesNR = FALSE,
+  retInnerPoint = FALSE, retVertices = TRUE, retFacets = TRUE,
   retVolume = FALSE, retBarycenter = TRUE, verbosity = 0)
 }
 \description{
@@ -97,9 +97,9 @@ the barycenter of the Tukey region. If the field is absent then either no halfsp
 }
 }
 \references{
-Liu, X., Luo, S., and Zuo, Y. (2016). Some results on the computing of Tukey's halfspace median. \href{https://arxiv.org/abs/1604.05927}{\code{arXiv:1604.05927}}.
+Liu, X., Luo, S., and Zuo, Y. (2020). Some results on the computing of Tukey's halfspace median. \emph{Statistical Papers}, 61, 303-316.
 
-Liu, X., Mosler, K., and Mozharovskyi, P. (2017). Fast computation of Tukey trimmed regions and median in dimension p > 2. \href{https://arxiv.org/abs/1412.5122}{\code{arXiv:1412.5122}}.
+Liu, X., Mosler, K., and Mozharovskyi, P. (2019). Fast computation of Tukey trimmed regions and median in dimension p > 2. \emph{Journal of Computational and Graphical Statistics}, 28, 682-697.
 }
 \author{
 Pavlo Mozharovskyi <pavlo.mozharovskyi@ensai.fr>
@@ -113,7 +113,7 @@ require(TukeyRegion)
 require(MASS)
 # Generate data
 set.seed(1)
-X <- mvrnorm(100, rep(0, 3), 
+X <- mvrnorm(100, rep(0, 3),
   matrix(c(1, 1, 1, 1, 2, 2, 1, 2, 4), nrow = 3))
 # Compute the Tukey median
 Tm <- TukeyMedian(X)

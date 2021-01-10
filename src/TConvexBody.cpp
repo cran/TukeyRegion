@@ -6,9 +6,9 @@
 #include "TukeyRegion.h"
 
 /* Return facets of the convex body, each defined by three vertices.          */
-void getQHFacets(TMatrix &points, vector<TVariables> &facets, bool triangulate, 
+void getQHFacets(TMatrix &points, vector<TVariables> &facets, bool triangulate,
                  int* pExitcode){
-	int n = points.size();int d = points[0].size();
+  int n = points.size();int d = points[0].size();
 	char *options;
 	string tmpStr;
 	if (d <= 3){
@@ -37,7 +37,7 @@ void getQHFacets(TMatrix &points, vector<TVariables> &facets, bool triangulate,
 	*pExitcode = qh_new_qhull (d, n, data, false, options, NULL, NULL);
 	//FILE *errfile = fopen("err.txt", "w");
 	//FILE *tmpstdout = fopen("out.txt", "w");
-	//int exitcode = qh_new_qhull (d, n, data, false, options, 
+	//int exitcode = qh_new_qhull (d, n, data, false, options,
   //                            tmpstdout, errfile);
 	//fclose(tmpstdout);
 	//fclose(errfile);
@@ -100,7 +100,7 @@ double getQHVolume(TMatrix &points, int* pExitcode){
   }
 }
 
-void getQHDelaunay(TMatrix &points, vector<TVariables> &facets, 
+void getQHDelaunay(TMatrix &points, vector<TVariables> &facets,
                    vector<double> &volumes, int* pExitcode){
   int n = points.size();int d = points[0].size();
   double *data = new double[n * d];
@@ -175,7 +175,7 @@ void getQHVertices(TMatrix &points, TVariables &vertexIndices, int* pExitcode){
   *pExitcode = qh_new_qhull (d, n, data, false, options, NULL, NULL);
   //FILE *errfile = fopen("err.txt", "w");
   //FILE *tmpstdout = fopen("out.txt", "w");
-  //int exitcode = qh_new_qhull (d, n, data, false, options, 
+  //int exitcode = qh_new_qhull (d, n, data, false, options,
   //                            tmpstdout, errfile);
   //fclose(tmpstdout);
   //fclose(errfile);
@@ -226,7 +226,7 @@ void getQHBarycenter(TMatrix &points,  TPoint &center, int* pExitcode){
   }
 }
 
-int fitlerHalfspaces(TMatrix &X, vector<unsigned long long> &facets, 
+int fitlerHalfspaces(TMatrix &X, vector<unsigned long long> &facets,
                      TPoint &center, TVariables &indicesHalfspacesNR){
   int n = X.size();int d = X[0].size();int numFacets = facets.size();
   // Obtain centred matrix
@@ -340,13 +340,13 @@ bool solveUnique(TMatrix A, TPoint b, TPoint *x){
 			b[i] -= factor * b[k];
 		}
 	}
-	// R?cksubstituition
+	// Ruecksubstituition
 	colp[d - 1] = d - 1;
 	for (int k = d - 1; k >= 0; k--) {
 		(*x)[k] = b[k] / A[k][k];
 		for (int i = k - 1; i >= 0; i--) b[i] -= (*x)[k] * A[i][k];
 	}
-	// Spaltenvertauschungen r?ckg?ngig machen
+	// Spaltenvertauschungen rueckgaengig machen
 	for (int k = d - 1; k >= 0; k--) {
 		if (colp[k] != k) {
 			double temp = (*x)[k];
@@ -596,7 +596,7 @@ unsigned long long getVertices(TMatrix &X, vector<unsigned long long> &facets,
         }
         //Rcout << isInside;
         //Rcout << endl;
-        // d) If the solution contains neither Infs nor Nans, 
+        // d) If the solution contains neither Infs nor Nans,
         // ... go to the following vertex
         if (isInside){
           break;
@@ -952,7 +952,7 @@ bool getInnerPoint(TMatrix &normals, TPoint &bs, TPoint *innerPoint){
 }
 
 /* Check whether a point is in the interrior of the halfspace intersection    */
-bool checkInnerPoint(TMatrix &normals, TPoint &bs, TPoint &innerPoint, 
+bool checkInnerPoint(TMatrix &normals, TPoint &bs, TPoint &innerPoint,
                      TVariables &iNormals, double &minEps){
   // Initialize the minimum distance to the facet
   minEps = DBL_MAX;
@@ -981,4 +981,4 @@ bool checkInnerPoint(TMatrix &normals, TPoint &bs, TPoint &innerPoint,
   }else{
     return true;
   }
-}  
+}

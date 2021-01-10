@@ -31,6 +31,7 @@
 
 #define MAXdim 200
 #define PI 3.1415926535897932384
+#define MIN(a,b) (a<b?a:b) // to circumvent CRAN check
 
 /* ------------------------------ prototypes ----------------*/
 int roundi( double a);
@@ -348,7 +349,13 @@ int qh_rboxpoints(FILE* fout, FILE* ferr, char* rbox_command) {
   }else if (israndom) {
     seed= (int)time(&timedata);
     sprintf(seedbuf, " t%d", seed);  /* appends an extra t, not worth removing */
-    strncat(command, seedbuf, sizeof(command)-strlen(command)-1);
+    // strncat(command, seedbuf, sizeof(command)-strlen(command)-1);
+    // Pavlo Mozharovskyi, 09/01/2021:
+    // Rewriting to pass the CRAN incoming check warning [-Wstringop-truncation]
+    memcpy(command + strlen(command), seedbuf,
+           MIN(sizeof(command)-strlen(command)-1, strlen(seedbuf)));
+    command[MIN(sizeof(command)-strlen(command)-1, strlen(seedbuf))] = '\0';
+    // End of rewriting
     t= strstr(command, " t ");
     if (t)
       strcpy(t+1, t+3); /* remove " t " */

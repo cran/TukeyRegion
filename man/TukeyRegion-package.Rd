@@ -7,7 +7,7 @@ Computation of the Tukey Region and the Tukey Median
 }
 
 \description{
-Tukey regions are polytopes in the Euclidean space, \emph{viz.} upper-level sets of the Tukey depth function on given data. The bordering hyperplanes of a Tukey region are computed as well as its vertices, facets, centroid, and volume. In addition, the Tukey median set, which is the non-empty Tukey region having highest depth level, and its barycenter (= Tukey median) are calculated. Tukey regions are visualized in dimension two and three. For details see Liu, Mosler, and Mozharovskyi (2017).
+Tukey regions are polytopes in the Euclidean space, \emph{viz.} upper-level sets of the Tukey depth function on given data. The bordering hyperplanes of a Tukey region are computed as well as its vertices, facets, centroid, and volume. In addition, the Tukey median set, which is the non-empty Tukey region having highest depth level, and its barycenter (= Tukey median) are calculated. Tukey regions are visualized in dimension two and three. For details see Liu, Mosler, and Mozharovskyi (2019).
 }
 
 \details{
@@ -28,7 +28,7 @@ License: \tab GPL (>= 3)\cr
 }
 
 \author{
-Authors: 
+Authors:
 C.B. Barber [aut, cph] (Qhull library), The Geometry Center of University of Minnesota [cph]  (Qhull library), Pavlo Mozharovskyi [aut, cre]
 
 Maintainer: Pavlo Mozharovskyi, <pavlo.mozharovskyi@ensai.fr>
@@ -44,9 +44,9 @@ Hallin, M., Paindaveine, D., and Siman, M. (2010). Multivariate quantiles and mu
 
 Kong, L. and Mizera, I. (2012). Quantile tomography: using quantiles with multivariate data. \emph{Statistica Sinica}, 22, 1589-1610. Published online as \code{arXiv:0805.0056 [stat.ME]} (2008).
 
-Liu, X., Luo, S., and Zuo, Y. (2016). Some results on the computing of Tukey's halfspace median. \href{https://arxiv.org/abs/1604.05927}{\code{arXiv:1604.05927 [math.ST]}}.
+Liu, X., Luo, S., and Zuo, Y. (2020). Some results on the computing of Tukey's halfspace median. \emph{Statistical Papers}, 61, 303-316.
 
-Liu, X., Mosler, K., and Mozharovskyi, P. (2017). Fast computation of Tukey trimmed regions and median in dimension p > 2. \href{https://arxiv.org/abs/1412.5122}{\code{arXiv:1412.5122 [stat.CO]}}.
+Liu, X., Mosler, K., and Mozharovskyi, P. (2019). Fast computation of Tukey trimmed regions and median in dimension p > 2. \emph{Journal of Computational and Graphical Statistics}, 28, 682-697.
 
 Tukey, J.W. (1975). Mathematics and the picturing of data. In: James, R.D. (Ed.), \emph{Proceeding of the International Congress of Mathematicians (Volume 2)}, Canadian Mathematical Congress, Vancouver, 523-531.
 
@@ -66,13 +66,13 @@ require(MASS)
 set.seed(1)
 X <- mvrnorm(100, rep(0, 3), diag(3))
 # Compute and visualize two Tukey regions
-Tr1 <- TukeyRegion(X, 5, "bfs", 
+Tr1 <- TukeyRegion(X, 5, "bfs",
   retFacets = TRUE, retVolume = TRUE, retBarycenter = TRUE)
-Tr2 <- TukeyRegion(X, 25, "bfs", 
+Tr2 <- TukeyRegion(X, 25, "bfs",
   retFacets = TRUE, retVolume = TRUE, retBarycenter = TRUE)
-plot(Tr1, colorFacets = "red", colorRidges = "red", 
+plot(Tr1, colorFacets = "red", colorRidges = "red",
   colorPoints = "blue", alpha = 0.35)
-plot(Tr2, newPlot = FALSE, drawPoints = FALSE, colorFacets = "green", 
+plot(Tr2, newPlot = FALSE, drawPoints = FALSE, colorFacets = "green",
   colorRidges = "green", alpha = 0.65)
 (Tr1$barycenter)
 (Tr2$barycenter)

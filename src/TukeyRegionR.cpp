@@ -6,7 +6,7 @@
 #include "TukeyRegion.h"
 
 // This is a simple example of exporting a C++ function to R. You can
-// source this function into an R session using the Rcpp::sourceCpp 
+// source this function into an R session using the Rcpp::sourceCpp
 // function (or via the Source button on the editor toolbar). Learn
 // more about Rcpp at:
 //
@@ -16,35 +16,35 @@
 //
 
 // You can include R code blocks in C++ files processed with sourceCpp
-// (useful for testing and development). The R code will be automatically 
+// (useful for testing and development). The R code will be automatically
 // run after the compilation.
 //
 
 // [[Rcpp::export]]
-List TukeyRegion(NumericMatrix data, int depth, 
-                 String method = "bfs", 
-                 bool trgFacets = false, 
-                 bool checkInnerPoint = true, 
-                 bool retHalfspaces = true, 
-                 bool retHalfspacesNR = false, 
-                 bool retInnerPoint = false, 
-                 bool retVertices = false, 
-                 bool retFacets = false, 
-                 bool retVolume = false, 
-                 bool retBarycenter = false, 
-                 IntegerMatrix halfspaces = IntegerMatrix(0), 
-                 NumericVector innerPoint = NumericVector(1), 
+List TukeyRegion(NumericMatrix data, int depth,
+                 String method = "bfs",
+                 bool trgFacets = false,
+                 bool checkInnerPoint = true,
+                 bool retHalfspaces = true,
+                 bool retHalfspacesNR = false,
+                 bool retInnerPoint = false,
+                 bool retVertices = false,
+                 bool retFacets = false,
+                 bool retVolume = false,
+                 bool retBarycenter = false,
+                 IntegerMatrix halfspaces = IntegerMatrix(0),
+                 NumericVector innerPoint = NumericVector(1),
                  int verbosity = 0){
   // Check data consistency
-  
+
   //Rcpp::Nullable< Rcpp::IntegerMatrix > halfspaces = R_NilValue,
   //Rcpp::Nullable< Rcpp::NumericVector > innerPoint = R_NilValue){
-  
+
   //IntegerMatrix rhalfspaces = wrap(halfspaces);
   //NumericVector rinnerPoint = wrap(innerPoint);
-  
+
   //Rcout << halfspaces.nrow() << " " << halfspaces.ncol() << endl;
-  
+
   // Check input consistency
   int algStart = 3;
   int numStart = -1;
@@ -89,7 +89,7 @@ at least d + 1 rows");
     Rcout << "Data constitutes " << n << " points of dimension " << d << endl;
     Rcout << "Required depth level is " << depth << endl;
   }
-  
+
   TMatrix X(n);
   for (int i = 0; i < n; i++){
     X[i].resize(d);
@@ -155,7 +155,7 @@ at least d + 1 rows");
     ret.push_back(true, "halfspacesFound");
   }else{
     if (verbosity >= 1){
-      Rcout << "No halfspaces could be found, the Tukey region does not" << 
+      Rcout << "No halfspaces could be found, the Tukey region does not" <<
         " exist for required depth level" << endl;
     }
     ret.push_back(false, "halfspacesFound");
@@ -175,7 +175,7 @@ at least d + 1 rows");
     ret.push_back(retHfsp, "halfspaces");
   }
   // Calculate inner point of the region
-  if (retInnerPoint || retHalfspacesNR || retVertices || retFacets || 
+  if (retInnerPoint || retHalfspacesNR || retVertices || retFacets ||
       retVolume || retBarycenter){
     if (verbosity >= 2){
       Rcout << "Computation of the Tukey region ..." << endl;
@@ -248,7 +248,7 @@ at least d + 1 rows");
     }else{
       ret.push_back(false, "innerPointFound");
       if (verbosity >= 1){
-        Rcout << "Inner point not found, the Tukey region does not" << 
+        Rcout << "Inner point not found, the Tukey region does not" <<
           " exist for required depth level" << endl;
       }
       ret.attr("class") = "TukeyRegion";
@@ -302,7 +302,7 @@ at least d + 1 rows");
         getQHFacets(vertexMatrix, facetVector, trgFacets, &exitcode);
         // Add facets to the return list
         if (trgFacets){
-          // If facest are triangulated, each facet("triangle") contains 
+          // If facest are triangulated, each facet("triangle") contains
           // ... exactly 'd' vertices, so we return an integer matrix
           IntegerMatrix facets(facetVector.size(), d);
           for (int i = 0; i < facetVector.size(); i++){
@@ -312,7 +312,7 @@ at least d + 1 rows");
           }
           ret.push_back(facets, "facets");
           if (verbosity >= 2){
-            Rcout << facetVector.size() << 
+            Rcout << facetVector.size() <<
               " facets computed with triangulation" << endl;
           }
         }else{
@@ -325,7 +325,7 @@ at least d + 1 rows");
           }
           ret.push_back(facets, "facets");
           if (verbosity >= 2){
-            Rcout << facetVector.size() << 
+            Rcout << facetVector.size() <<
               " facets computed without triangulation" << endl;
           }
         }
@@ -377,17 +377,17 @@ at least d + 1 rows");
 
 // [[Rcpp::depends(ddalpha)]]
 // [[Rcpp::export]]
-List TukeyMedian(NumericMatrix data, 
-                 String algMedian = "bsbarydepth", 
-                 String method = "bfs", 
+List TukeyMedian(NumericMatrix data,
+                 String algMedian = "bsbarydepth",
+                 String method = "bfs",
                  bool trgFacets = true,
                  bool retHalfspaces = false,
-                 bool retHalfspacesNR = false, 
-                 bool retInnerPoint = false, 
-                 bool retVertices = true, 
-                 bool retFacets = true, 
-                 bool retVolume = false, 
-                 bool retBarycenter = true, 
+                 bool retHalfspacesNR = false,
+                 bool retInnerPoint = false,
+                 bool retVertices = true,
+                 bool retFacets = true,
+                 bool retVolume = false,
+                 bool retBarycenter = true,
                  int verbosity = 0){
   // Check input consistency
   int algStart = 3;
@@ -480,18 +480,18 @@ List TukeyMedian(NumericMatrix data,
         break;
       }
       if (verbosity >= 2){
-        Rcout << "Checking existence of region for depth value " << curDepth << 
+        Rcout << "Checking existence of region for depth value " << curDepth <<
           endl;
       }
-      curState = TRegionCheckDepth(X, curDepth, intAlgRegion, algStart, 
+      curState = TRegionCheckDepth(X, curDepth, intAlgRegion, algStart,
                                    numStart, &tmpHfspCodes, &tmpInnerPoint);
-      //curState = TRegionCheckDepth(X, 3, intAlgRegion, algStart, numStart, 
+      //curState = TRegionCheckDepth(X, 3, intAlgRegion, algStart, numStart,
       //                             &hfspCodes, &theInnerPoint);
-      //curState = TRegionCheckDepth(X, 2, intAlgRegion, algStart, numStart, 
+      //curState = TRegionCheckDepth(X, 2, intAlgRegion, algStart, numStart,
       //                             &hfspCodes, &theInnerPoint);
-      //curState = TRegionCheckDepth(X, 1, intAlgRegion, algStart, numStart, 
+      //curState = TRegionCheckDepth(X, 1, intAlgRegion, algStart, numStart,
       //                             &hfspCodes, &theInnerPoint);
-      //curState = TRegionCheckDepth(X, 2, intAlgRegion, algStart, numStart, 
+      //curState = TRegionCheckDepth(X, 2, intAlgRegion, algStart, numStart,
       //                             &hfspCodes, &theInnerPoint);
       //curState = true;
       // Update the bounds
@@ -507,7 +507,7 @@ List TukeyMedian(NumericMatrix data,
       }else{
         upperDepth = curDepth;
         if (verbosity >= 1){
-          Rcout << "Depth region not found for depth value " << curDepth << 
+          Rcout << "Depth region not found for depth value " << curDepth <<
             endl;
         }
       }
@@ -523,10 +523,10 @@ List TukeyMedian(NumericMatrix data,
     int curDepth = upperDepth; // last tried depth
     while (curDepth > 0){
       if (verbosity >= 2){
-        Rcout << "Checking existence of region for depth value " << curDepth << 
+        Rcout << "Checking existence of region for depth value " << curDepth <<
           endl;
       }
-      curState = TRegionCheckDepth(X, curDepth, intAlgRegion, algStart, 
+      curState = TRegionCheckDepth(X, curDepth, intAlgRegion, algStart,
                                    numStart, &tmpHfspCodes, &tmpInnerPoint);
       if (curState){
         hfspCodes = tmpHfspCodes;
@@ -540,7 +540,7 @@ List TukeyMedian(NumericMatrix data,
       }else{
         curDepth--;
         if (verbosity >= 1){
-          Rcout << "Depth region not found for depth value " << curDepth << 
+          Rcout << "Depth region not found for depth value " << curDepth <<
             endl;
         }
       }
@@ -556,10 +556,10 @@ List TukeyMedian(NumericMatrix data,
     int curDepth = 1; // last tried depth
     while(curDepth < upperDepth){
       if (verbosity >= 2){
-        Rcout << "Checking existence of region for depth value " << curDepth << 
+        Rcout << "Checking existence of region for depth value " << curDepth <<
           endl;
       }
-      curState = TRegionCheckDepth(X, curDepth, intAlgRegion, algStart, 
+      curState = TRegionCheckDepth(X, curDepth, intAlgRegion, algStart,
                                    numStart, &tmpHfspCodes, &tmpInnerPoint);
       if (curState){
         hfspCodes = tmpHfspCodes;
@@ -573,7 +573,7 @@ List TukeyMedian(NumericMatrix data,
       }else{
         curState = true;
         if (verbosity >= 1){
-          Rcout << "Depth region not found for depth value " << curDepth << 
+          Rcout << "Depth region not found for depth value " << curDepth <<
             endl;
         }
         break;
@@ -583,7 +583,7 @@ List TukeyMedian(NumericMatrix data,
   if (intAlgMedian == 4){
     if (verbosity >= 2){
       Rcout << "Search of the median will be performed by cutting the " <<
-        "domain in two parts and updating lower bound " << 
+        "domain in two parts and updating lower bound " <<
           "due to the depth of the barycenter" << endl;
     }
     // Following the article by Liu, Luo, and Zuo, cut in half
@@ -600,8 +600,8 @@ List TukeyMedian(NumericMatrix data,
     // Compute its depth
     Environment ddalpha_env("package:ddalpha");
     Function ddalpha_depthhalfspace = ddalpha_env["depth.halfspace"];
-    int cmedDepth = round(as<double>(ddalpha_depthhalfspace(wrap(cmedian), data, 
-                                                  true, 
+    int cmedDepth = round(as<double>(ddalpha_depthhalfspace(wrap(cmedian), data,
+                                                  true,
                                                   _["method"] = "plane")) * n);
     if (verbosity >= 2){
       Rcout << "Depth of the componentwise median: " << cmedDepth << endl;
@@ -615,7 +615,7 @@ List TukeyMedian(NumericMatrix data,
     int curDepth = -1; // last tried depth
     if (verbosity >= 1){
       Rcout << "Lower depth bound for binary search: " << lowerDepth << endl;
-      Rcout << "Upper depth bound for binary search: " << upperDepth - 1 << 
+      Rcout << "Upper depth bound for binary search: " << upperDepth - 1 <<
         endl;
     }
     while (upperDepth > lowerDepth){
@@ -625,10 +625,10 @@ List TukeyMedian(NumericMatrix data,
         break;
       }
       if (verbosity >= 2){
-        Rcout << "Checking existence of region for depth value " << curDepth << 
+        Rcout << "Checking existence of region for depth value " << curDepth <<
           endl;
       }
-      curState = TRegionCheckDepth(X, curDepth, intAlgRegion, algStart, 
+      curState = TRegionCheckDepth(X, curDepth, intAlgRegion, algStart,
                                    numStart, &tmpHfspCodes, &tmpInnerPoint);
       // Update the bounds
       if (curState){
@@ -673,21 +673,21 @@ List TukeyMedian(NumericMatrix data,
         medDepth = curDepth;
         lowerDepth = curDepth;
         // Compute depth of the barycenter
-        curDepth = round(as<double>(ddalpha_depthhalfspace(wrap(center), data, 
-                                                true, 
+        curDepth = round(as<double>(ddalpha_depthhalfspace(wrap(center), data,
+                                                true,
                                                 _["method"] = "plane")) * n);
         if (curDepth > medDepth){
           medDepth = curDepth;
           lowerDepth = curDepth;
         }
         if (verbosity >= 1){
-          Rcout << "Point (barycenter) found for depth value " << 
+          Rcout << "Point (barycenter) found for depth value " <<
             curDepth << endl;
         }
       }else{
         upperDepth = curDepth;
         if (verbosity >= 1){
-          Rcout << "Depth region not found for depth value " << curDepth << 
+          Rcout << "Depth region not found for depth value " << curDepth <<
             endl;
         }
       }
@@ -705,17 +705,17 @@ List TukeyMedian(NumericMatrix data,
           halfspaces(i,j) = pointNumbers[j] + 1;
         }
       }
-      return TukeyRegion(data, medDepth, method, 
-                         trgFacets, true, retHalfspaces, retHalfspacesNR, 
-                         retInnerPoint, retVertices, retFacets, retVolume, 
-                         retBarycenter, halfspaces, wrap(theInnerPoint), 
+      return TukeyRegion(data, medDepth, method,
+                         trgFacets, true, retHalfspaces, retHalfspacesNR,
+                         retInnerPoint, retVertices, retFacets, retVolume,
+                         retBarycenter, halfspaces, wrap(theInnerPoint),
                          verbosity);
     }else{
       // No output prepared, calculate
-      return TukeyRegion(data, medDepth, method, 
-                         trgFacets, true, retHalfspaces, retHalfspacesNR, 
-                         retInnerPoint, retVertices, retFacets, retVolume, 
-                         retBarycenter, IntegerMatrix(0), NumericVector(1), 
+      return TukeyRegion(data, medDepth, method,
+                         trgFacets, true, retHalfspaces, retHalfspacesNR,
+                         retInnerPoint, retVertices, retFacets, retVolume,
+                         retBarycenter, IntegerMatrix(0), NumericVector(1),
                          verbosity);
     }
   }else{
@@ -729,13 +729,13 @@ List TukeyMedian(NumericMatrix data,
 
 // [[Rcpp::depends(rgl)]]
 // [[Rcpp::export]]
-void TukeyRegionPlot(List region, bool newPlot = true, bool drawPoints = true, 
-                     bool drawRidges = true, 
-                     CharacterVector colorBackground = "white", 
-                     CharacterVector colorPoints = "red", 
-                     CharacterVector colorFacets = "blue", 
-                     CharacterVector colorRidges = "green", 
-                     double lwd2D = 1, 
+void TukeyRegionPlot(List region, bool newPlot = true, bool drawPoints = true,
+                     bool drawRidges = true,
+                     CharacterVector colorBackground = "white",
+                     CharacterVector colorPoints = "red",
+                     CharacterVector colorFacets = "blue",
+                     CharacterVector colorRidges = "green",
+                     double lwd2D = 1,
                      int lty2D = 1,
                      double alpha = 1){
   // Input consistency check
@@ -755,7 +755,7 @@ void TukeyRegionPlot(List region, bool newPlot = true, bool drawPoints = true,
   //Rcout << "Object seen." << endl;
   //NumericVector resid = as<NumericVector>(region["residuals"]);
   //Rcout << resid(1) << endl;
-  
+
   //Environment global_env = Environment::global_env();
   //if(global_env.exists(std::string("package:rgl"))){
   //  Rcout << "rgl loaded." << endl;
@@ -763,7 +763,7 @@ void TukeyRegionPlot(List region, bool newPlot = true, bool drawPoints = true,
   //  Rcout << "rgl not loaded." << endl;
   //}
   //return global_env.ls(true);
-  
+
   int depth = (int)region["depth"];
   NumericMatrix vertices = as<NumericMatrix>(region["vertices"]);
   // If the dimension of the data is 2:
@@ -837,12 +837,12 @@ void TukeyRegionPlot(List region, bool newPlot = true, bool drawPoints = true,
     // Create plot
     if (newPlot){
       Function graphics_plot = graphics_env["plot"];
-      graphics_plot(R_NilValue, 
-                    _["xlim"] = NumericVector::create(xMin, xMax), 
-                    _["ylim"] = NumericVector::create(yMin, yMax), 
-                    _["xlab"] = "x", 
-                    _["ylab"] = "y", 
-                    _["main"] = "Tukey region of depth " + 
+      graphics_plot(R_NilValue,
+                    _["xlim"] = NumericVector::create(xMin, xMax),
+                    _["ylim"] = NumericVector::create(yMin, yMax),
+                    _["xlab"] = "x",
+                    _["ylab"] = "y",
+                    _["main"] = "Tukey region of depth " +
                       to_string(depth));
 //                      (ostringstream() << depth).str());
     }
@@ -858,12 +858,12 @@ void TukeyRegionPlot(List region, bool newPlot = true, bool drawPoints = true,
       int nFacets = facets.nrow();
       for (int i = 0; i < nFacets; i++){
         for (int j = 0; j < d; j++){
-          graphics_lines(NumericVector::create(vertices(facets(i,0) - 1,0), 
-                                               vertices(facets(i,1) - 1,0)), 
-                         NumericVector::create(vertices(facets(i,0) - 1,1), 
-                                               vertices(facets(i,1) - 1,1)), 
-                                               _["col"] = colorFacets, 
-                                               _["lwd"] = NumericVector::create(lwd2D), 
+          graphics_lines(NumericVector::create(vertices(facets(i,0) - 1,0),
+                                               vertices(facets(i,1) - 1,0)),
+                         NumericVector::create(vertices(facets(i,0) - 1,1),
+                                               vertices(facets(i,1) - 1,1)),
+                                               _["col"] = colorFacets,
+                                               _["lwd"] = NumericVector::create(lwd2D),
                                                _["lty"] = NumericVector::create(lty2D));
         }
       }
@@ -875,12 +875,12 @@ void TukeyRegionPlot(List region, bool newPlot = true, bool drawPoints = true,
         IntegerVector tmpVertices = as<IntegerVector>(facets[i]);
         int nTmpVertices = tmpVertices.length();
         for (int j = 0; j < nTmpVertices; j++){
-          graphics_lines(NumericVector::create(vertices(tmpVertices(0) - 1,0), 
-                                               vertices(tmpVertices(1) - 1,0)), 
-                         NumericVector::create(vertices(tmpVertices(0) - 1,1), 
-                                               vertices(tmpVertices(1) - 1,1)), 
-                                               _["col"] = colorFacets, 
-                                               _["lwd"] = NumericVector::create(lwd2D), 
+          graphics_lines(NumericVector::create(vertices(tmpVertices(0) - 1,0),
+                                               vertices(tmpVertices(1) - 1,0)),
+                         NumericVector::create(vertices(tmpVertices(0) - 1,1),
+                                               vertices(tmpVertices(1) - 1,1)),
+                                               _["col"] = colorFacets,
+                                               _["lwd"] = NumericVector::create(lwd2D),
                                                _["lty"] = NumericVector::create(lty2D));
         }
       }
@@ -903,9 +903,9 @@ void TukeyRegionPlot(List region, bool newPlot = true, bool drawPoints = true,
   if (drawPoints){
     Function rgl_spheres = rgl_env["rgl.spheres"];
     //Function rgl_points3d = rgl_env["points3d"];
-    rgl_spheres(points(_,0), points(_,1), points(_,2), radius, 
+    rgl_spheres(points(_,0), points(_,1), points(_,2), radius,
                 List::create(_["color"] = colorPoints));
-    //rgl_points3d(points(_,0), points(_,1), points(_,2), 
+    //rgl_points3d(points(_,0), points(_,1), points(_,2),
     //             _["color"] = "red");
   }
   // Plot the region
@@ -922,7 +922,7 @@ void TukeyRegionPlot(List region, bool newPlot = true, bool drawPoints = true,
     }
     // Draw simple triagnles
     Function rgl_triangles = rgl_env["rgl.triangles"];
-    rgl_triangles(triangles(_,0), triangles(_,1), triangles(_,2), 
+    rgl_triangles(triangles(_,0), triangles(_,1), triangles(_,2),
                   _["color"] = colorFacets, _["alpha"] = alpha);
   }else{ //if facets are not triangulated - Delaunay and qhull each of them
     // Prepare data
@@ -941,7 +941,7 @@ void TukeyRegionPlot(List region, bool newPlot = true, bool drawPoints = true,
       // Transform to temporary variables
       IntegerVector tmpVertices = as<IntegerVector>(facets[i]) - 1;
       TVariables fVertices = as<TVariables>(tmpVertices);
-      
+
       /*
       if (fVertices.size() == d){ // if the facet is a simplex
         // Plot the facet directly
@@ -956,7 +956,7 @@ void TukeyRegionPlot(List region, bool newPlot = true, bool drawPoints = true,
         // Triangulate the facet and find its ridges
       }
       */
-      
+
       // Define the facet's two-domensional basis
       // (we do not care about the orthonormality because of affine invariance)
       TMatrix basis(2);basis[0] = TPoint(3);basis[1] = TPoint(3);
@@ -975,13 +975,13 @@ void TukeyRegionPlot(List region, bool newPlot = true, bool drawPoints = true,
       TMatrix fVertices2d(fVertices.size());
       for (int j = 0; j < fVertices.size(); j++){
         fVertices2d[j] = TPoint(2);
-        fVertices2d[j][0] = (vertices(fVertices[j],0) - 
-          vertices(fVertices[0],0)) * basis[0][0] + 
-          (vertices(fVertices[j],1) - vertices(fVertices[0],1)) * basis[0][1] + 
+        fVertices2d[j][0] = (vertices(fVertices[j],0) -
+          vertices(fVertices[0],0)) * basis[0][0] +
+          (vertices(fVertices[j],1) - vertices(fVertices[0],1)) * basis[0][1] +
           (vertices(fVertices[j],2) - vertices(fVertices[0],2)) * basis[0][2];
-        fVertices2d[j][1] = (vertices(fVertices[j],0) - 
-          vertices(fVertices[0],0)) * basis[1][0] + 
-          (vertices(fVertices[j],1) - vertices(fVertices[0],1)) * basis[1][1] + 
+        fVertices2d[j][1] = (vertices(fVertices[j],0) -
+          vertices(fVertices[0],0)) * basis[1][0] +
+          (vertices(fVertices[j],1) - vertices(fVertices[0],1)) * basis[1][1] +
           (vertices(fVertices[j],2) - vertices(fVertices[0],2)) * basis[1][2];
         //Rcout << fVertices2d[j][0] << "    " << fVertices2d[j][1] << endl;
       }
@@ -1066,7 +1066,7 @@ void TukeyRegionSummary(List region){
   Rcout << "Required depth level is " << depth << endl;
   if (!as<bool>(region["halfspacesFound"])){
     Rcout << endl;
-    Rcout << "No halfspaces could be found, the Tukey region does not" << 
+    Rcout << "No halfspaces could be found, the Tukey region does not" <<
       " exist for required depth level" << endl;
     return;
   }
@@ -1077,14 +1077,14 @@ void TukeyRegionSummary(List region){
   }
   if (!as<bool>(region["innerPointFound"])){
     Rcout << endl;
-    Rcout << "Inner point not found, the Tukey region does not" << 
+    Rcout << "Inner point not found, the Tukey region does not" <<
       " exist for required depth level" << endl;
     return;
   }
   if (region.containsElementNamed("innerPoint")){
     Rcout << endl;
     NumericVector innerPoint = as<NumericVector>(region["innerPoint"]);
-    Rcout << "Inner point of the region is located in " << endl << 
+    Rcout << "Inner point of the region is located in " << endl <<
       innerPoint << endl;
   }
   if (region.containsElementNamed("halfspacesNR")){
@@ -1106,7 +1106,7 @@ void TukeyRegionSummary(List region){
       }
     }
   }
-  if (region.containsElementNamed("volume") || 
+  if (region.containsElementNamed("volume") ||
       region.containsElementNamed("barycenter")){
     Rcout << endl;
   }
