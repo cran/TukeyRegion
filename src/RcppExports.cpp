@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // TukeyRegion
 List TukeyRegion(NumericMatrix data, int depth, String method, bool trgFacets, bool checkInnerPoint, bool retHalfspaces, bool retHalfspacesNR, bool retInnerPoint, bool retVertices, bool retFacets, bool retVolume, bool retBarycenter, IntegerMatrix halfspaces, NumericVector innerPoint, int verbosity);
 RcppExport SEXP _TukeyRegion_TukeyRegion(SEXP dataSEXP, SEXP depthSEXP, SEXP methodSEXP, SEXP trgFacetsSEXP, SEXP checkInnerPointSEXP, SEXP retHalfspacesSEXP, SEXP retHalfspacesNRSEXP, SEXP retInnerPointSEXP, SEXP retVerticesSEXP, SEXP retFacetsSEXP, SEXP retVolumeSEXP, SEXP retBarycenterSEXP, SEXP halfspacesSEXP, SEXP innerPointSEXP, SEXP verbositySEXP) {
@@ -82,12 +87,60 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// TukeyKRegions
+List TukeyKRegions(NumericMatrix data, int maxDepth, String method, bool trgFacets, bool checkInnerPoint, bool retHalfspaces, bool retHalfspacesNR, bool retInnerPoint, bool retVertices, bool retFacets, bool retVolume, bool retBarycenter, int verbosity);
+RcppExport SEXP _TukeyRegion_TukeyKRegions(SEXP dataSEXP, SEXP maxDepthSEXP, SEXP methodSEXP, SEXP trgFacetsSEXP, SEXP checkInnerPointSEXP, SEXP retHalfspacesSEXP, SEXP retHalfspacesNRSEXP, SEXP retInnerPointSEXP, SEXP retVerticesSEXP, SEXP retFacetsSEXP, SEXP retVolumeSEXP, SEXP retBarycenterSEXP, SEXP verbositySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< int >::type maxDepth(maxDepthSEXP);
+    Rcpp::traits::input_parameter< String >::type method(methodSEXP);
+    Rcpp::traits::input_parameter< bool >::type trgFacets(trgFacetsSEXP);
+    Rcpp::traits::input_parameter< bool >::type checkInnerPoint(checkInnerPointSEXP);
+    Rcpp::traits::input_parameter< bool >::type retHalfspaces(retHalfspacesSEXP);
+    Rcpp::traits::input_parameter< bool >::type retHalfspacesNR(retHalfspacesNRSEXP);
+    Rcpp::traits::input_parameter< bool >::type retInnerPoint(retInnerPointSEXP);
+    Rcpp::traits::input_parameter< bool >::type retVertices(retVerticesSEXP);
+    Rcpp::traits::input_parameter< bool >::type retFacets(retFacetsSEXP);
+    Rcpp::traits::input_parameter< bool >::type retVolume(retVolumeSEXP);
+    Rcpp::traits::input_parameter< bool >::type retBarycenter(retBarycenterSEXP);
+    Rcpp::traits::input_parameter< int >::type verbosity(verbositySEXP);
+    rcpp_result_gen = Rcpp::wrap(TukeyKRegions(data, maxDepth, method, trgFacets, checkInnerPoint, retHalfspaces, retHalfspacesNR, retInnerPoint, retVertices, retFacets, retVolume, retBarycenter, verbosity));
+    return rcpp_result_gen;
+END_RCPP
+}
+// TukeyRegions
+List TukeyRegions(NumericMatrix data, NumericVector depths, String method, bool trgFacets, bool checkInnerPoint, bool retHalfspaces, bool retHalfspacesNR, bool retInnerPoint, bool retVertices, bool retFacets, bool retVolume, bool retBarycenter, int verbosity);
+RcppExport SEXP _TukeyRegion_TukeyRegions(SEXP dataSEXP, SEXP depthsSEXP, SEXP methodSEXP, SEXP trgFacetsSEXP, SEXP checkInnerPointSEXP, SEXP retHalfspacesSEXP, SEXP retHalfspacesNRSEXP, SEXP retInnerPointSEXP, SEXP retVerticesSEXP, SEXP retFacetsSEXP, SEXP retVolumeSEXP, SEXP retBarycenterSEXP, SEXP verbositySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type depths(depthsSEXP);
+    Rcpp::traits::input_parameter< String >::type method(methodSEXP);
+    Rcpp::traits::input_parameter< bool >::type trgFacets(trgFacetsSEXP);
+    Rcpp::traits::input_parameter< bool >::type checkInnerPoint(checkInnerPointSEXP);
+    Rcpp::traits::input_parameter< bool >::type retHalfspaces(retHalfspacesSEXP);
+    Rcpp::traits::input_parameter< bool >::type retHalfspacesNR(retHalfspacesNRSEXP);
+    Rcpp::traits::input_parameter< bool >::type retInnerPoint(retInnerPointSEXP);
+    Rcpp::traits::input_parameter< bool >::type retVertices(retVerticesSEXP);
+    Rcpp::traits::input_parameter< bool >::type retFacets(retFacetsSEXP);
+    Rcpp::traits::input_parameter< bool >::type retVolume(retVolumeSEXP);
+    Rcpp::traits::input_parameter< bool >::type retBarycenter(retBarycenterSEXP);
+    Rcpp::traits::input_parameter< int >::type verbosity(verbositySEXP);
+    rcpp_result_gen = Rcpp::wrap(TukeyRegions(data, depths, method, trgFacets, checkInnerPoint, retHalfspaces, retHalfspacesNR, retInnerPoint, retVertices, retFacets, retVolume, retBarycenter, verbosity));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_TukeyRegion_TukeyRegion", (DL_FUNC) &_TukeyRegion_TukeyRegion, 15},
     {"_TukeyRegion_TukeyMedian", (DL_FUNC) &_TukeyRegion_TukeyMedian, 12},
     {"_TukeyRegion_TukeyRegionPlot", (DL_FUNC) &_TukeyRegion_TukeyRegionPlot, 11},
     {"_TukeyRegion_TukeyRegionSummary", (DL_FUNC) &_TukeyRegion_TukeyRegionSummary, 1},
+    {"_TukeyRegion_TukeyKRegions", (DL_FUNC) &_TukeyRegion_TukeyKRegions, 13},
+    {"_TukeyRegion_TukeyRegions", (DL_FUNC) &_TukeyRegion_TukeyRegions, 13},
     {NULL, NULL, 0}
 };
 

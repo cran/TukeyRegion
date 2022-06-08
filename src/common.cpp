@@ -275,7 +275,7 @@ bool getFacets(TMatrix &XPrj, int intTau, TVariables *curCmb,
         facetIndicis->push_back(negAngles[negIndex].index);
       }
     }
-    
+
   }
   if (posIndex + 1 == posAngles.size()){ // if any points below abscisse left
     if (intTau >= numInHalfspace &&
@@ -772,10 +772,10 @@ int solveLP(TPoint &obj, TMatrix &A, TPoint &b, TPoint *result){
   Rglpk_bounds.push_back(bounds_upper, "upper");
   Rglpk_bounds.push_back(bounds_lower, "lower");
   // // The call itself
-  List lps = Rglpk_Rglpk_solve_LP(Rglpk_obj, Rglpk_mat, Rglpk_dir, Rglpk_rhs, 
+  List lps = Rglpk_Rglpk_solve_LP(Rglpk_obj, Rglpk_mat, Rglpk_dir, Rglpk_rhs,
                                   Rglpk_bounds);
   // Extract the solution
-  Rcout << "Status:" << as<int>(lps["status"]) << std::endl;
+  // Rcout << "Status:" << as<int>(lps["status"]) << std::endl;
   if (as<int>(lps["status"]) == 0){
     result->resize(ncol);
     for (int i = 0; i < ncol; i++){
@@ -787,9 +787,9 @@ int solveLP(TPoint &obj, TMatrix &A, TPoint &b, TPoint *result){
   }
 }
 
-//bounds <- list(lower = list(ind = c(1L, 3L), val = c(-Inf, 2)), 
-//               upper = list(ind = c(1L, 2L), val = c(4, 100))) 
-//  Rglpk_solve_LP(obj, mat, dir, rhs, types, max, bounds) 
+//bounds <- list(lower = list(ind = c(1L, 3L), val = c(-Inf, 2)),
+//               upper = list(ind = c(1L, 2L), val = c(4, 100)))
+//  Rglpk_solve_LP(obj, mat, dir, rhs, types, max, bounds)
 //https://www.rdocumentation.org/packages/Rglpk/versions/0.6-3/topics/Rglpk_solve_LP
 
 /* Solve a linear programming problem                                         */
@@ -852,7 +852,7 @@ int solveLP(TPoint &obj, TMatrix &A, TPoint &b, TPoint *result){
 //   }
 // }
 
-int initRidges(TMatrix &X, int intTau, int method, int nRidges, 
+int initRidges(TMatrix &X, int intTau, int method, int nRidges,
                vector<TVariables*> &ridges){
   int d = X[0].size();
   int n = X.size();
@@ -914,6 +914,224 @@ int initRidges(TMatrix &X, int intTau, int method, int nRidges,
             // e) Save successful combination
             //if (i == 0){
               //Rcout << "Combination found during first iteration." << endl;
+            TVariables* pARidge = new TVariables(curCmb);
+            ridges.push_back(pARidge);
+            jFound = j;
+            found = true;
+            break;
+            //}
+          }
+        }
+      }
+      if (found){
+        iFound = i;
+        break;
+      }
+    }
+    if(!found){
+      return 0;
+    }else{
+      // If one ridge only is to return
+      if (nRidges == 1){
+        return 1;
+      }
+      // The Xiaohui's last trick
+      if (nRidges == -1){
+        // Collect all ridges defined by points above the 'facetCandidates'
+        for (int i = 0; i < facetCandidates.size(); i++){
+          // Find the outer-pointing orthogonal direction
+          TVariables curCmb(*(ridges[0]));
+          curCmb.push_back(facetCandidates[i]);
+          TMatrix A(d - 1);
+          for (int j = 1; j < d; j++){
+            A[j - 1] = TPoint(d);
+            for (int k = 0; k < d; k++){
+              A[j - 1][k] = X[curCmb[j]][k] - X[curCmb[0]][k];
+            }
+          }
+          TPoint normal;
+          getNormal(A, &normal);
+          TPoint projection(n);
+          for (int j = 0; j < n; j++){
+            for (int k = 0; k < d; k++){
+              projection[j] += X[j][k] * normal[k];
+            }
+          }
+          int pointsAbove = 0;int pointsBelow = 0;
+          for (int j = 0; j < n; j++){
+            if (projection[j] > projection[curCmb[0]] + eps){pointsAbove++;}
+            if (projection[j] < projection[curCmb[0]] - eps){pointsBelow++;}
+          }
+          //Rcout << "Points above = " << pointsAbove << ", points below = " << pointsBelow << endl;
+          if (pointsBelow <= intTau){
+            for (int j = 0; j < d; j++){
+              normal[j] = -normal[j];
+            }
+            for (int j = 0; j < n; j++){
+              projection[j] = 0;
+              for (int k = 0; k < d; k++){
+                projection[j] += X[j][k] * normal[k];
+              }
+            }
+          }
+          // Add the point itself
+          for (int j = 0; j < d - 1; j++){
+            TVariables* pARidge = new TVariables(*(ridges[0]));
+            (*pARidge)[j] = facetCandidates[i];
+            sort(pARidge->begin(), pARidge->end());
+            ridges.push_back(pARidge);
+          }
+          // Identify and add all above points
+          for (int j = 0; j < n; j++){
+            if (projection[j] > projection[curCmb[0]] + eps){
+              //Rcout << "+ ";
+              // Add a ridge co-defined by this point
+              for (int k = 0; k < d - 1; k++){
+                TVariables* pARidge = new TVariables(*(ridges[0]));
+                (*pARidge)[k] = j;
+                sort(pARidge->begin(), pARidge->end());
+                ridges.push_back(pARidge);
+              }
+            }
+          }
+        }
+        //Rcout << ridges.size() << " initialized in total." << endl;
+        return ridges.size();
+      }
+      int nCmb = 1;
+      TVariables curCmb(d - 1);
+      for (int i = 0; i < facets.size(); i++){
+        // Construct all 'd' ridges
+        sort(facets[i].begin(), facets[i].end());
+        int swapIVertex = facets[i][0];
+        for (int j = 0; j < d - 1; j++){
+          curCmb[j] = facets[i][j + 1];
+        }
+        for (int j = -1; j < d - 1; j++){
+          if (j > -1){
+            // Replace the 'd'th index (to keep length = 'd - 1')
+            int tmpI = curCmb[j];
+            curCmb[j] = swapIVertex;
+            swapIVertex = tmpI;
+          }
+          if (i == iFound && j == jFound){continue;}
+          TVariables* pARidge = new TVariables(curCmb);
+          ridges.push_back(pARidge);
+          nCmb++;
+          if (nRidges > 1 && nCmb >= nRidges){break;}
+        }
+      }
+      return nCmb;
+    }
+  }
+  TVariables *firstCmb = new TVariables(); // the first combination
+  firstCmb->resize(d - 1);
+  if (method == 1){
+    // Guess by checking ordered points on random projections
+    getFirstCombination(X, intTau, firstCmb);
+  }
+  if (nRidges == 1){
+    // To use one initial combination only
+    firstCmb->resize(d - 1);
+    //sort(firstCmb->begin(), firstCmb->end());
+    ridges.push_back(firstCmb);
+    return 1;
+  }else{
+    // To use all (d-1)-tupels lying outside as initial combinations
+    TVariables counters(d - 1);
+    // Go through all necessary combinations:
+    for (int i = 0; i < d - 2; i++){counters[i] = i;}counters[d - 2] = d - 3;
+    int numOut = firstCmb->size();
+    int nCmb = 0;
+    while (counters[0] != numOut - d + 1){ // Get current combination
+      int i = d - 2;
+      while (i > 0 && counters[i] == numOut - d + i + 1){i--;}
+      counters[i]++;int j = i + 1;
+      while (j < d - 1){counters[j] = counters[j - 1] + 1;j++;}
+      // For current combination do :
+      TVariables *curCmb = new TVariables(d - 1);
+      for (int k = 0; k < d - 1; k++){(*curCmb)[k] = (*firstCmb)[counters[k]];}
+      sort(curCmb->begin(), curCmb->end()); // sort after choosing
+      // ... to keep the first (that is guaranteed a good one) combination
+      ridges.push_back(curCmb);
+      nCmb++;
+      if (nRidges > 0 && nCmb >= nRidges){break;}
+    }
+    return ridges.size();
+  }
+  return 0;
+}
+
+int initRidges2D(TMatrix &X, int intTau, int method, int nRidges,
+                 vector<TVariables*> &ridges){
+  int d = X[0].size();
+  int n = X.size();
+  ridges.resize(0);
+  if (method == 3){
+    // Pick from the convex hull
+    vector<TVariables> facets(0);
+    int exitcode;
+    getQHFacets(X, facets, true, &exitcode);
+    // Try to find at least one good ridge
+    bool found = false;
+    int iFound = -1;
+    int jFound = -1;
+    TVariables facetCandidates;
+    for (int i = 0; i < facets.size(); i++){
+      // Construct and check all 'd' ridges
+      int swapIVertex = facets[i][0];
+      TVariables curCmb(facets[i].begin() + 1, facets[i].end());
+      sort(curCmb.begin(), curCmb.end());
+      for (int j = -1; j < d - 1; j++){
+        if (j > -1){
+          // Replace the 'd'th index (to keep length = 'd - 1')
+          int tmpI = curCmb[j];
+          curCmb[j] = swapIVertex;
+          swapIVertex = tmpI;
+        }
+        // Check whether the ridge yields further facets
+        // a) Prepare data structures
+        int n = X.size();
+        TMatrix plane(d - 2);
+        if (d > 2){
+          for (int i = 1; i < d - 1; i++) {
+            plane[i - 1] = TPoint(d);
+          }
+        }
+        TMatrix basis(2); basis[0] = TPoint(d); basis[1] = TPoint(d);
+        TMatrix curXPrj;
+        curXPrj.resize(X.size());
+        for (int i = 0; i < X.size(); i++) {
+          curXPrj[i] = TPoint(2);
+        }
+        // b) Project onto the plane orthogonal to the ridge
+        if (d > 2){
+          for (int i = 1; i < d - 1; i++){
+            for (int j = 0; j < d; j++){
+              plane[i - 1][j] = X[curCmb[i]][j] - X[curCmb[0]][j];
+            }
+          }
+        }
+        if (d == 2){
+          basis[0][0] = 1;basis[0][1] = 1;basis[1][0] = 0;basis[1][1] = 1;
+        }else{
+          getBasisComplement(plane, &basis);
+        }
+        getProjection(X, basis, &curXPrj);
+        TPoint center(curXPrj[curCmb[0]]);
+        for (int i = 0; i < n; i++){
+          for (int j = 0; j < 2; j++){
+            curXPrj[i][j] -= center[j];
+          }
+        }
+        // d) Obtain facet candidates
+        //Rcout << "Points to cut: " << intTau << endl;
+        bool boolTmp = getFacets(curXPrj, intTau, &curCmb, &facetCandidates);
+        if (boolTmp){
+          if (facetCandidates.size() >= 2){
+            // e) Save successful combination
+            //if (i == 0){
+            //Rcout << "Combination found during first iteration." << endl;
             TVariables* pARidge = new TVariables(curCmb);
             ridges.push_back(pARidge);
             jFound = j;

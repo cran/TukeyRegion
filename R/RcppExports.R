@@ -17,3 +17,11 @@ TukeyRegionSummary <- function(region) {
     invisible(.Call('_TukeyRegion_TukeyRegionSummary', PACKAGE = 'TukeyRegion', region))
 }
 
+TukeyKRegions <- function(data, maxDepth, method = "bfs", trgFacets = FALSE, checkInnerPoint = TRUE, retHalfspaces = TRUE, retHalfspacesNR = FALSE, retInnerPoint = FALSE, retVertices = FALSE, retFacets = FALSE, retVolume = FALSE, retBarycenter = FALSE, verbosity = 0L) {
+    .Call('_TukeyRegion_TukeyKRegions', PACKAGE = 'TukeyRegion', data, maxDepth, method, trgFacets, checkInnerPoint, retHalfspaces, retHalfspacesNR, retInnerPoint, retVertices, retFacets, retVolume, retBarycenter, verbosity)
+}
+
+TukeyRegions <- function(data, depths, method = "bfs", trgFacets = FALSE, checkInnerPoint = TRUE, retHalfspaces = TRUE, retHalfspacesNR = FALSE, retInnerPoint = FALSE, retVertices = FALSE, retFacets = FALSE, retVolume = FALSE, retBarycenter = FALSE, verbosity = 0L) {
+    .Call('_TukeyRegion_TukeyRegions', PACKAGE = 'TukeyRegion', data, depths, method, trgFacets, checkInnerPoint, retHalfspaces, retHalfspacesNR, retInnerPoint, retVertices, retFacets, retVolume, retBarycenter, verbosity)
+}
+

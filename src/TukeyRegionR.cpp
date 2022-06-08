@@ -121,17 +121,37 @@ at least d + 1 rows");
       Rcout << "Halfspaces are not provided, calculating them" << endl;
     }
     if (d == 2){
-      if (verbosity >= 1){
-        Rcout << "As dimension = 2 the brute-force method is employed" << endl;
+      // if (verbosity >= 1){
+      //   Rcout << "As dimension = 2 the brute-force method is employed" << endl;
+      // }
+      if (intAlgRegion == 1){
+        if (verbosity >= 2){
+          Rcout << "The breadth-first search method is employed" << endl;
+        }
+        hfspFound = TRegion2D(X, depth, algStart, numStart, &hfspCodes);
       }
-      hfspFound = TRegionBruteForce(X, depth, &hfspCodes);
+      if (intAlgRegion == 2){
+        if (verbosity >= 2){
+          Rcout << "The combinatorial method is employed" << endl;
+        }
+        hfspFound = TRegionCmb2D(X, depth, &hfspCodes);
+      }
+      if (intAlgRegion == 3){
+        if (verbosity >= 2){
+          Rcout << "The brute-force method is employed" << endl;
+        }
+        hfspFound = TRegionBruteForce(X, depth, &hfspCodes);
+      }
     }else{
       // Choose the algorithm to calculate the region
       if (intAlgRegion == 1){
         if (verbosity >= 2){
           Rcout << "The breadth-first search method is employed" << endl;
         }
-        hfspFound = TRegion(X, depth, algStart, numStart, &hfspCodes);
+        int numRidges = 0;
+        hfspFound = TRegion(X, depth, algStart, numStart, &hfspCodes,
+                            &numRidges);
+        ret.push_back(numRidges, "numRidges");
       }
       if (intAlgRegion == 2){
         if (verbosity >= 2){
@@ -1119,4 +1139,76 @@ void TukeyRegionSummary(List region){
     Rcout << "The region's barycenter is in " << endl << barycenter << endl;
   }
 //  Rcout << "Summary called." << endl;
+}
+
+// [[Rcpp::export]]
+List TukeyKRegions(NumericMatrix data, int maxDepth,
+                 String method = "bfs",
+                 bool trgFacets = false,
+                 bool checkInnerPoint = true,
+                 bool retHalfspaces = true,
+                 bool retHalfspacesNR = false,
+                 bool retInnerPoint = false,
+                 bool retVertices = false,
+                 bool retFacets = false,
+                 bool retVolume = false,
+                 bool retBarycenter = false,
+                 int verbosity = 0){
+  // Create the return structure for Regions
+  IntegerMatrix halfspaces = IntegerMatrix(0);
+  NumericVector innerPoint = NumericVector(1);
+  List ret = List::create();
+  queue<TVariables*>* ridges = new queue<TVariables*>[1];
+  List ret1 = TukeyRegionTau(data, 1, method, trgFacets, checkInnerPoint,
+                             retHalfspaces, retHalfspacesNR, retInnerPoint,
+                             retVertices, retFacets, retVolume,
+                             retBarycenter, ridges, halfspaces, innerPoint,
+                             verbosity);
+  ret.push_back(ret1);
+  delete[] ridges;
+  if (maxDepth > 1){
+    // Declare the pointer for ridges
+    ridges = new queue<TVariables*>[1];
+    for (int i = 2; i <= maxDepth; i++){
+      // Go through all regions
+      List retTmp = TukeyRegionTau(data, i, method, trgFacets, checkInnerPoint,
+                                   retHalfspaces, retHalfspacesNR,
+                                   retInnerPoint, retVertices, retFacets,
+                                   retVolume, retBarycenter, ridges,
+                                   halfspaces, innerPoint, verbosity);
+      ret.push_back(retTmp);
+    }
+    delete[] ridges;
+  }
+  ret.attr("class") = "TukeyRegionsList";
+  return ret;
+}
+
+// [[Rcpp::export]]
+List TukeyRegions(NumericMatrix data, NumericVector depths,
+                  String method = "bfs",
+                  bool trgFacets = false,
+                  bool checkInnerPoint = true,
+                  bool retHalfspaces = true,
+                  bool retHalfspacesNR = false,
+                  bool retInnerPoint = false,
+                  bool retVertices = false,
+                  bool retFacets = false,
+                  bool retVolume = false,
+                  bool retBarycenter = false,
+                  int verbosity = 0){
+  int nDepths = depths.length();
+  IntegerMatrix halfspaces = IntegerMatrix(0);
+  NumericVector innerPoint = NumericVector(1);
+  List ret = List::create();
+  for (int i = 0; i < nDepths; i++){
+    List retTmp = TukeyRegion(data, depths(i), method, trgFacets,
+                              checkInnerPoint, retHalfspaces, retHalfspacesNR,
+                              retInnerPoint, retVertices, retFacets,
+                              retVolume, retBarycenter,
+                              halfspaces, innerPoint, verbosity);
+    ret.push_back(retTmp);
+  }
+  ret.attr("class") = "TukeyRegionsList";
+  return ret;
 }

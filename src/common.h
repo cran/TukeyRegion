@@ -42,8 +42,10 @@ void OrthogonalizeProjection(TMatrix &projection, TMatrix *oProjection);
 void TransformData(double *rawData, int n, int d, TMatrix *data);
 void genNormDevs(unsigned int n, double mu, double sigma, TPoint *devs);
 int solveLP(TPoint &obj, TMatrix &A, TPoint &b, TPoint *result);
-int initRidges(TMatrix &X, int intTau, int method, int nRidges, 
+int initRidges(TMatrix &X, int intTau, int method, int nRidges,
                vector<TVariables*> &ridges);
+int initRidges2D(TMatrix &X, int intTau, int method, int nRidges,
+                 vector<TVariables*> &ridges);
 
 typedef double** TDMatrix;
 

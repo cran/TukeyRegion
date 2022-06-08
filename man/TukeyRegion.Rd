@@ -15,10 +15,10 @@ Computes the Tukey depth trimmed region for a given depth level.
 }
 \arguments{
 \item{data}{
-data set for which the Tukey region shall be computed, a matrix having > 2 columns and more rows than columns.
+data set for which the Tukey region shall be computed, a matrix having \code{> 2} columns and more rows than columns.
 }
 \item{depth}{
-depth of the Tukey region, an integer between 1 and the half of the number of rows in \code{data}.
+depth of the Tukey region, an integer between \code{1} and the half of the number of rows in \code{data}.
 }
 \item{method}{
 the method to use to compute the Tukey region, a string containing \code{"bfs"}, or \code{"cmb"}, or \code{"bf"}, see `Details', \code{"bfs"} by default.
@@ -63,7 +63,7 @@ level of details to print during execution, integer, from \code{0} (= print noth
 \details{
 The function computes the Tukey region (upper-level set of the Tukey depth function) for \code{n} points in the Euclidean \code{d}-variate space contained in \code{data} at the depth value \code{depth}.
 
-Three methods are implemented: Method \code{"bfs"} is the most efficient, it starts with an initial set of ridges and traverses all facets using the \bold{breadth-first search} algorithm. Method \code{"cmb"} considers all subspaces spanned by \bold{combinations} of \code{d - 1} points, projects \code{data} onto their orthogonal complements (planes), and searches for bivariate quantiles these planes. Method \code{"bf"} employs the \bold{brute-force} strategy by checking all halfspaces defined by hyperplanes containing \code{d} points from \code{data}. If \code{d = 2}, method \code{"bf"} is used. See Liu, Mosler, and Mozharovskyi (2017) for details on algorithms.
+Three methods are implemented: Method \code{"bfs"} is the most efficient, it starts with an initial set of ridges and traverses all facets using the \bold{breadth-first search} algorithm. Method \code{"cmb"} considers all subspaces spanned by \bold{combinations} of \code{d - 1} points, projects \code{data} onto their orthogonal complements (planes), and searches for bivariate quantiles these planes. Method \code{"bf"} employs the \bold{brute-force} strategy by checking all halfspaces defined by hyperplanes containing \code{d} points from \code{data}. If \code{d = 2}, method \code{"bf"} is used. See Liu, Mosler, and Mozharovskyi (2019) for details on algorithms.
 
 The function proceeds in three main steps. Step 1: Calculate all the halfspaces defining Tukey region in their intersection. Many of them are usually redundant. Step 2: Find the inner point of the Tukey region, \emph{i.e.} a point which lies simultaneously in all the before calculated halfspaces. If such a point does not exist neither does the Tukey region exist for this depth level. The algorithm stops and returns \code{FALSE} in the field \code{innerPointFound}. If the inner point has been found, the algorithm proceeds to Step 3: Filter the halfspaces leaving only those containing the facets of the Tukey region. Step 3 provides infirmation to compute vertices, facets, volume, and barycenter of the Tukey region.
 

@@ -10,7 +10,7 @@
 //#ifdef __cplusplus
 //extern "C" {
 //#endif
-  
+
 /* Export functions --------------------------------------------------------- */
 
 //__declspec( dllexport ) void __cdecl TukeyRegionBFS(double *data, int *n, int *d, double *tau, int* numFacets, int* facets){
@@ -19,7 +19,8 @@ void TukeyRegionBFS(double *data, int *n, int *d, double *tau, int* numFacets, i
   TMatrix X(*n);
   TransformData(data, *n, *d, &X);
   vector<unsigned long long> halfspacesBFS;
-  TRegion(X, intDepth, 3, 1, &halfspacesBFS);
+  int numRidges = 0;
+  TRegion(X, intDepth, 3, 1, &halfspacesBFS, &numRidges);
   sort(halfspacesBFS.begin(), halfspacesBFS.end());
   *numFacets = halfspacesBFS.size();
   for (int i = 0; i < halfspacesBFS.size(); i++){
@@ -30,7 +31,7 @@ void TukeyRegionBFS(double *data, int *n, int *d, double *tau, int* numFacets, i
     }
   }
 }
-  
+
 //__declspec( dllexport ) void __cdecl TukeyRegionCmb(double *data, int *n, int *d, double *tau, int* numFacets, int* facets){
 void TukeyRegionCmb(double *data, int *n, int *d, double *tau, int* numFacets, int* facets){
   int intDepth = floor(*tau * *n + 1./(10 * *n));
@@ -76,7 +77,8 @@ void TukeyRegionBFSVertices(double *data, int *n, int *d, double *tau, int *numH
   if (*d == 2){
     TRegionBruteForce(X, intDepth, &halfspacesBFS);
   }else{
-    TRegion(X, intDepth, 3, 1, &halfspacesBFS);
+    int numRidges = 0;
+    TRegion(X, intDepth, 3, 1, &halfspacesBFS, &numRidges);
   }
   *numHalfsaces = halfspacesBFS.size();
   vector<vector<double> > normals;
@@ -119,7 +121,8 @@ void TukeyRegionBFSStats(double *data, int *n, int *d, double *tau, int *numHalf
   if (*d == 2){
     TRegionBruteForce(X, intDepth, &halfspacesBFS);
   }else{
-    TRegion(X, intDepth, 3, 1, &halfspacesBFS);
+    int numRidges = 0;
+    TRegion(X, intDepth, 3, 1, &halfspacesBFS, &numRidges);
   }
   *found = 1;
   //cout << "Halfspaces calculates" << endl;
@@ -156,7 +159,8 @@ void TrBfsHfsp(double *data, int *n, int *d, double *tau, int *numHalfspaces, in
   if (*d == 2){
     TRegionBruteForce(X, intDepth, &halfspacesBFS);
   }else{
-    TRegion(X, intDepth, 3, 1, &halfspacesBFS);
+    int numRidges = 0;
+    TRegion(X, intDepth, 3, 1, &halfspacesBFS, &numRidges);
   }
   *numHalfspaces = halfspacesBFS.size();
   TVariables pointIndices(*d);
@@ -198,7 +202,7 @@ void TrFacets(double *data, int intTau, int *n, int *d, int *numHalfspaces, int 
       facet[j] = halfspaces[i * *d + j] - 1;
     }
     halfspacesBFS[i] = getFacetCode(facet, *n);
-    
+
   }
   vector<double> innerPoint(*d);
   //for (int i = 0; i < *n; i++){

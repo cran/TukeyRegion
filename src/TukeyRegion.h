@@ -24,6 +24,7 @@ extern "C"{
 #include "hypermatrix.h"
 #include "bstree.h"
 #include "TRegion.h"
+#include "TkRegions.h"
 #include "TConvexBody.h"
 
 #include <math.h>
