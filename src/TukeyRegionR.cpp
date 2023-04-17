@@ -474,11 +474,14 @@ List TukeyMedian(NumericMatrix data,
   // Define passing variables
   int medDepth = -1; // depth of the median
   int savedDepth = -2; // depth of the last calculated region
+  int numRegions = 0; // number of copmuted regions
   vector<unsigned long long> hfspCodes(0);
   vector<unsigned long long> tmpHfspCodes;
   TPoint theInnerPoint(d);
   TPoint tmpInnerPoint(d);
   bool curState = false; // indicator whether last computation was successful
+  int numRidges = 0; // number of checked ridges if using 'bfs' algorithm
+  int tmpNumRidges = 0; // temporary variable for the number of ridges
   // Choose the algorithm
   if (intAlgMedian == 1){
     if (verbosity >= 2){
@@ -504,7 +507,9 @@ List TukeyMedian(NumericMatrix data,
           endl;
       }
       curState = TRegionCheckDepth(X, curDepth, intAlgRegion, algStart,
-                                   numStart, &tmpHfspCodes, &tmpInnerPoint);
+                                   numStart, &tmpHfspCodes, &tmpInnerPoint,
+                                   &tmpNumRidges);
+      numRegions++;
       //curState = TRegionCheckDepth(X, 3, intAlgRegion, algStart, numStart,
       //                             &hfspCodes, &theInnerPoint);
       //curState = TRegionCheckDepth(X, 2, intAlgRegion, algStart, numStart,
@@ -521,6 +526,7 @@ List TukeyMedian(NumericMatrix data,
         savedDepth = curDepth;
         medDepth = curDepth;
         lowerDepth = curDepth;
+        numRidges = tmpNumRidges;
         if (verbosity >= 1){
           Rcout << "Depth region found for depth value " << curDepth << endl;
         }
@@ -547,12 +553,15 @@ List TukeyMedian(NumericMatrix data,
           endl;
       }
       curState = TRegionCheckDepth(X, curDepth, intAlgRegion, algStart,
-                                   numStart, &tmpHfspCodes, &tmpInnerPoint);
+                                   numStart, &tmpHfspCodes, &tmpInnerPoint,
+                                   &tmpNumRidges);
+      numRegions++;
       if (curState){
         hfspCodes = tmpHfspCodes;
         theInnerPoint = tmpInnerPoint;
         savedDepth = curDepth;
         medDepth = curDepth;
+        numRidges = tmpNumRidges;
         if (verbosity >= 1){
           Rcout << "Depth region found for depth value " << curDepth << endl;
         }
@@ -580,13 +589,16 @@ List TukeyMedian(NumericMatrix data,
           endl;
       }
       curState = TRegionCheckDepth(X, curDepth, intAlgRegion, algStart,
-                                   numStart, &tmpHfspCodes, &tmpInnerPoint);
+                                   numStart, &tmpHfspCodes, &tmpInnerPoint,
+                                   &tmpNumRidges);
+      numRegions++;
       if (curState){
         hfspCodes = tmpHfspCodes;
         theInnerPoint = tmpInnerPoint;
         savedDepth = curDepth;
         medDepth = curDepth;
         curDepth++;
+        numRidges = tmpNumRidges;
         if (verbosity >= 1){
           Rcout << "Depth region found for depth value " << curDepth << endl;
         }
@@ -649,12 +661,15 @@ List TukeyMedian(NumericMatrix data,
           endl;
       }
       curState = TRegionCheckDepth(X, curDepth, intAlgRegion, algStart,
-                                   numStart, &tmpHfspCodes, &tmpInnerPoint);
+                                   numStart, &tmpHfspCodes, &tmpInnerPoint,
+                                   &tmpNumRidges);
+      numRegions++;
       // Update the bounds
       if (curState){
         hfspCodes = tmpHfspCodes;
         theInnerPoint = tmpInnerPoint;
         savedDepth = curDepth;
+        numRidges = tmpNumRidges;
         if (verbosity >= 2){
           Rcout << "Computation of the Tukey region's shape ..." << endl;
         }
@@ -725,23 +740,33 @@ List TukeyMedian(NumericMatrix data,
           halfspaces(i,j) = pointNumbers[j] + 1;
         }
       }
-      return TukeyRegion(data, medDepth, method,
-                         trgFacets, true, retHalfspaces, retHalfspacesNR,
-                         retInnerPoint, retVertices, retFacets, retVolume,
-                         retBarycenter, halfspaces, wrap(theInnerPoint),
-                         verbosity);
+      // Prepared output - no new halfspaces search
+      List ret = TukeyRegion(data, medDepth, method,
+                             trgFacets, true, retHalfspaces, retHalfspacesNR,
+                             retInnerPoint, retVertices, retFacets, retVolume,
+                             retBarycenter, halfspaces, wrap(theInnerPoint),
+                             verbosity);
+      ret.push_back(numRidges, "numRidges");
+      ret.push_back(numRegions, "numRegions");
+      ret.attr("class") = "TukeyRegion";
+      return ret;
     }else{
       // No output prepared, calculate
-      return TukeyRegion(data, medDepth, method,
-                         trgFacets, true, retHalfspaces, retHalfspacesNR,
-                         retInnerPoint, retVertices, retFacets, retVolume,
-                         retBarycenter, IntegerMatrix(0), NumericVector(1),
-                         verbosity);
+      List ret = TukeyRegion(data, medDepth, method,
+                             trgFacets, true, retHalfspaces, retHalfspacesNR,
+                             retInnerPoint, retVertices, retFacets, retVolume,
+                             retBarycenter, IntegerMatrix(0), NumericVector(1),
+                             verbosity);
+      numRegions++;
+      ret.push_back(numRegions, "numRegions");
+      ret.attr("class") = "TukeyRegion";
+      return ret;
     }
   }else{
     // Median could not be computed
     List ret = List::create();
     ret.push_back(medDepth, "depth");
+    ret.push_back(numRegions, "numRegions");
     ret.push_back(false, "innerPointFound");
     return ret;
   }
@@ -1210,5 +1235,74 @@ List TukeyRegions(NumericMatrix data, NumericVector depths,
     ret.push_back(retTmp);
   }
   ret.attr("class") = "TukeyRegionsList";
+  return ret;
+}
+
+// [[Rcpp::export]]
+List TukeyKMedian(NumericMatrix data,
+                  String algMedian = "upwards",
+                  String method = "bfs",
+                  bool trgFacets = true,
+                  bool retHalfspaces = false,
+                  bool retHalfspacesNR = false,
+                  bool retInnerPoint = false,
+                  bool retVertices = true,
+                  bool retFacets = true,
+                  bool retVolume = false,
+                  bool retBarycenter = true,
+                  int verbosity = 0){
+  // Check input consistency
+  int n = data.nrow();
+  int d = data.ncol();
+  if (d < 2 || n <= d){
+    stop("Argument 'data' should be a matrix with at least d = 2 columns and \
+           at least d + 1 rows");
+  }
+  if (algMedian != "upwards" || method != "bfs"){
+    stop("This function only treats arguments 'algMedian' 'upwards' and 'method' \
+'bfs', for other combinations of there two arguments use funciton \
+'TukeyMedian'.");
+  }
+  if (verbosity < 0 || verbosity > 2){
+    stop("Argument 'verbosity' should be an integer equal 0, 1, or 2");
+  }
+  // Until which depth to check
+  int maxDepth = floor((n - d + 1) / 2);
+  // Create the return structure for Regions
+  IntegerMatrix halfspaces = IntegerMatrix(0);
+  NumericVector innerPoint = NumericVector(1);
+  List retRegion;
+  List retLast;
+  // Calculate the first region
+  queue<TVariables*>* ridges = new queue<TVariables*>[1];
+  retRegion = TukeyRegionTau(data, 1, method, trgFacets, true,
+                             retHalfspaces, retHalfspacesNR, retInnerPoint,
+                             retVertices, retFacets, retVolume,
+                             retBarycenter, ridges, halfspaces, innerPoint,
+                             verbosity);
+  delete[] ridges;
+  if (maxDepth < 2){
+    return retRegion;
+  }
+  // Calculate and check the resting regions
+  ridges = new queue<TVariables*>[1];
+  for (int i = 2; i <= maxDepth; i++){
+    // Go through all regions
+    retLast = TukeyRegionTau(data, i, method, trgFacets, true,
+                             retHalfspaces, retHalfspacesNR,
+                             retInnerPoint, retVertices, retFacets,
+                             retVolume, retBarycenter, ridges,
+                             halfspaces, innerPoint, verbosity);
+    if (as<bool>(retLast["innerPointFound"])){
+      retRegion = retLast;
+    }else{
+      delete[] ridges;
+      return retRegion;
+    }
+  }
+  // Median could not be computed
+  List ret = List::create();
+  ret.push_back(maxDepth, "depth");
+  ret.push_back(false, "innerPointFound");
   return ret;
 }

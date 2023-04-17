@@ -133,6 +133,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// TukeyKMedian
+List TukeyKMedian(NumericMatrix data, String algMedian, String method, bool trgFacets, bool retHalfspaces, bool retHalfspacesNR, bool retInnerPoint, bool retVertices, bool retFacets, bool retVolume, bool retBarycenter, int verbosity);
+RcppExport SEXP _TukeyRegion_TukeyKMedian(SEXP dataSEXP, SEXP algMedianSEXP, SEXP methodSEXP, SEXP trgFacetsSEXP, SEXP retHalfspacesSEXP, SEXP retHalfspacesNRSEXP, SEXP retInnerPointSEXP, SEXP retVerticesSEXP, SEXP retFacetsSEXP, SEXP retVolumeSEXP, SEXP retBarycenterSEXP, SEXP verbositySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< String >::type algMedian(algMedianSEXP);
+    Rcpp::traits::input_parameter< String >::type method(methodSEXP);
+    Rcpp::traits::input_parameter< bool >::type trgFacets(trgFacetsSEXP);
+    Rcpp::traits::input_parameter< bool >::type retHalfspaces(retHalfspacesSEXP);
+    Rcpp::traits::input_parameter< bool >::type retHalfspacesNR(retHalfspacesNRSEXP);
+    Rcpp::traits::input_parameter< bool >::type retInnerPoint(retInnerPointSEXP);
+    Rcpp::traits::input_parameter< bool >::type retVertices(retVerticesSEXP);
+    Rcpp::traits::input_parameter< bool >::type retFacets(retFacetsSEXP);
+    Rcpp::traits::input_parameter< bool >::type retVolume(retVolumeSEXP);
+    Rcpp::traits::input_parameter< bool >::type retBarycenter(retBarycenterSEXP);
+    Rcpp::traits::input_parameter< int >::type verbosity(verbositySEXP);
+    rcpp_result_gen = Rcpp::wrap(TukeyKMedian(data, algMedian, method, trgFacets, retHalfspaces, retHalfspacesNR, retInnerPoint, retVertices, retFacets, retVolume, retBarycenter, verbosity));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_TukeyRegion_TukeyRegion", (DL_FUNC) &_TukeyRegion_TukeyRegion, 15},
@@ -141,6 +163,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_TukeyRegion_TukeyRegionSummary", (DL_FUNC) &_TukeyRegion_TukeyRegionSummary, 1},
     {"_TukeyRegion_TukeyKRegions", (DL_FUNC) &_TukeyRegion_TukeyKRegions, 13},
     {"_TukeyRegion_TukeyRegions", (DL_FUNC) &_TukeyRegion_TukeyRegions, 13},
+    {"_TukeyRegion_TukeyKMedian", (DL_FUNC) &_TukeyRegion_TukeyKMedian, 12},
     {NULL, NULL, 0}
 };
 

@@ -54,7 +54,7 @@ level of details to print during execution, integer, from \code{0} (= print noth
 }
 }
 \details{
-The function computes the Tukey regions (upper-level set of the Tukey depth function) for \code{n} points in the Euclidean \code{d}-variate space contained in \code{data} at the depth values specified in the argument \code{maxDepth}. This function calls iteratively function \code{\link[TukeyRegion]{TukeyRegion}} for depth levels from \code{1} to \code{maxDepth}, where each time the initial set of ridges conincides with all the ridges found at the previous step (see).
+The function computes the Tukey regions (upper-level set of the Tukey depth function) for \code{n} points in the Euclidean \code{d}-variate space contained in \code{data} at the depth values specified in the argument \code{maxDepth}. This function calls iteratively function \code{\link[TukeyRegion]{TukeyRegion}} for depth levels from \code{1} to \code{maxDepth}, where each time the initial set of ridges conincides with all the ridges found at the previous step (see Fojtik et al., 2022).
 
 Due to the nature of the function, arguments \code{halfspaces} and/or \code{innerPoint} cannot be provided here anymore.
 }
@@ -96,10 +96,13 @@ volume of the Tukey region. If the field is absent then either no halfspaces or 
 \item{barycenter}{
 the barycenter of the Tukey region. If the field is absent then either no halfspaces or no inner point have been found or facet computation has not been requested by the input arguments.
 }
+\item{numRidges}{
+number of used ridges.
+}
 }
 \references{
 Liu, X., Mosler, K., and Mozharovskyi, P. (2019). Fast computation of Tukey trimmed regions and median in dimension p > 2. \emph{Journal of Computational and Graphical Statistics}, 28, 682-697.
-Vit Fojtik, Petra Laketa, Pavlo Mozharovskyi, and Stanislav Nagy (2021). On exact computation of Tukey depth central regions. \emph{Mimeo}.
+Vit Fojtik, Petra Laketa, Pavlo Mozharovskyi, and Stanislav Nagy (2022). On exact computation of Tukey depth central regions. \emph{arXiv:2208.04587}.
 }
 \author{
 Pavlo Mozharovskyi <pavlo.mozharovskyi@ensai.fr>

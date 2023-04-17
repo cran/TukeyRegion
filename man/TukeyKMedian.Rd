@@ -1,14 +1,14 @@
-\name{TukeyMedian}
-\alias{TukeyMedian}
+\name{TukeyKMedian}
+\alias{TukeyKMedian}
 \title{Computation of the Tukey median set and Tukey median}
 \usage{
-TukeyMedian(data, algMedian = "bsbarydepth", method = "bfs",
+TukeyKMedian(data, algMedian = "upwards", method = "bfs",
   trgFacets = TRUE, retHalfspaces = FALSE, retHalfspacesNR = FALSE,
   retInnerPoint = FALSE, retVertices = TRUE, retFacets = TRUE,
   retVolume = FALSE, retBarycenter = TRUE, verbosity = 0)
 }
 \description{
-Computes the Tukey median set and its barycenter, the Tukey median.
+Computes the Tukey median set and its barycenter, the Tukey median, starting from the region with dpeth \code{1} iteratively increasing it, according to the algorithm by Fojtik et al. (2022).
 }
 \arguments{
 \item{data}{
@@ -106,6 +106,9 @@ number of used ridges (for computing the last region).
 Liu, X., Luo, S., and Zuo, Y. (2020). Some results on the computing of Tukey's halfspace median. \emph{Statistical Papers}, 61, 303-316.
 
 Liu, X., Mosler, K., and Mozharovskyi, P. (2019). Fast computation of Tukey trimmed regions and median in dimension p > 2. \emph{Journal of Computational and Graphical Statistics}, 28, 682-697.
+
+Vit Fojtik, Petra Laketa, Pavlo Mozharovskyi, and Stanislav Nagy (2022). On exact computation of Tukey depth central regions. \emph{arXiv:2208.04587}.
+
 }
 \author{
 Pavlo Mozharovskyi <pavlo.mozharovskyi@ensai.fr>
@@ -122,7 +125,7 @@ set.seed(1)
 X <- mvrnorm(100, rep(0, 3),
   matrix(c(1, 1, 1, 1, 2, 2, 1, 2, 4), nrow = 3))
 # Compute the Tukey median
-Tm <- TukeyMedian(X)
+Tm <- TukeyKMedian(X)
 summary(Tm)
 # Visualize the Tukey median
 plot(Tm)

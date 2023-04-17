@@ -20,8 +20,8 @@ For cumputation of Tukey depth see function \code{\link{depth.halfspace}} of pac
 \tabular{ll}{
 Package: \tab TukeyRegion\cr
 Type: \tab Package\cr
-Version: \tab 0.1.5.2\cr
-Date: \tab 2021-11-21\cr
+Version: \tab 0.1.6.3\cr
+Date: \tab 2023-04-17\cr
 License: \tab GPL (>= 3)\cr
 }
 

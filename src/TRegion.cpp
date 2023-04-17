@@ -188,6 +188,7 @@ bool TRegion(TMatrix X, int intDepth, int algStart, int numStart,
 	for (int i = 0; i < X.size(); i++) {
 		curXPrj[i] = TPoint(2);
 	}
+	*numRidges = 0; // zero the ridges' counter'
 	while(!Q.empty()){
 		//chrono::time_point<chrono::steady_clock> t1, t2;
 		TVariables *curCmb = Q.front();
@@ -281,7 +282,7 @@ bool TRegion(TMatrix X, int intDepth, int algStart, int numStart,
 
 bool TRegionCheckDepth(TMatrix X, int intDepth, int algRegion, int algStart,
                        int numStart, vector<unsigned long long>* facets,
-                       TPoint* innerPoint){
+                       TPoint* innerPoint, int* numRidges){
   // Calculate halfspaces
   int n = X.size();
   int d = X[0].size();
@@ -291,8 +292,7 @@ bool TRegionCheckDepth(TMatrix X, int intDepth, int algRegion, int algStart,
   }else{
     // Choose the algorithm to calculate the region
     if (algRegion == 1){
-      int numRidges = 0;
-      hfspFound = TRegion(X, intDepth, algStart, numStart, facets, &numRidges);
+      hfspFound = TRegion(X, intDepth, algStart, numStart, facets, numRidges);
     }
     if (algRegion == 2){
       hfspFound = TRegionCmb(X, intDepth, facets);

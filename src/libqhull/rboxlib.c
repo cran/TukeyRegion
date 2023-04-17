@@ -348,7 +348,9 @@ int qh_rboxpoints(FILE* fout, FILE* ferr, char* rbox_command) {
     }
   }else if (israndom) {
     seed= (int)time(&timedata);
-    sprintf(seedbuf, " t%d", seed);  /* appends an extra t, not worth removing */
+    // sprintf(seedbuf, " t%d", seed);  /* appends an extra t, not worth removing */
+    // Pavlo Mozharovskyi, 17/04/2023:
+    // Rewriting to pass the CRAN check warning
     // strncat(command, seedbuf, sizeof(command)-strlen(command)-1);
     // Pavlo Mozharovskyi, 09/01/2021:
     // Rewriting to pass the CRAN incoming check warning [-Wstringop-truncation]

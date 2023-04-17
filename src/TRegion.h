@@ -13,6 +13,6 @@ bool TRegionBruteForce(TMatrix X, int intDepth,
 bool TRegionCmb2D(TMatrix X, int intDepth, vector<unsigned long long>* facets);
 bool TRegionCheckDepth(TMatrix X, int intDepth, int algRegion, int algStart,
                        int numStart, vector<unsigned long long>* facets,
-                       TPoint* innerPoint);
+                       TPoint* innerPoint, int* numRidges);
 bool TRegion2D(TMatrix X, int intDepth, int algStart, int numStart,
                vector<unsigned long long>* facets);

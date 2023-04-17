@@ -25,3 +25,7 @@ TukeyRegions <- function(data, depths, method = "bfs", trgFacets = FALSE, checkI
     .Call('_TukeyRegion_TukeyRegions', PACKAGE = 'TukeyRegion', data, depths, method, trgFacets, checkInnerPoint, retHalfspaces, retHalfspacesNR, retInnerPoint, retVertices, retFacets, retVolume, retBarycenter, verbosity)
 }
 
+TukeyKMedian <- function(data, algMedian = "upwards", method = "bfs", trgFacets = TRUE, retHalfspaces = FALSE, retHalfspacesNR = FALSE, retInnerPoint = FALSE, retVertices = TRUE, retFacets = TRUE, retVolume = FALSE, retBarycenter = TRUE, verbosity = 0L) {
+    .Call('_TukeyRegion_TukeyKMedian', PACKAGE = 'TukeyRegion', data, algMedian, method, trgFacets, retHalfspaces, retHalfspacesNR, retInnerPoint, retVertices, retFacets, retVolume, retBarycenter, verbosity)
+}
+

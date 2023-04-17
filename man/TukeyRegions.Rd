@@ -97,6 +97,9 @@ volume of the Tukey region. If the field is absent then either no halfspaces or 
 \item{barycenter}{
 the barycenter of the Tukey region. If the field is absent then either no halfspaces or no inner point have been found or facet computation has not been requested by the input arguments.
 }
+\item{numRidges}{
+number of used ridges.
+}
 }
 \references{
 Liu, X., Mosler, K., and Mozharovskyi, P. (2019). Fast computation of Tukey trimmed regions and median in dimension p > 2. \emph{Journal of Computational and Graphical Statistics}, 28, 682-697.

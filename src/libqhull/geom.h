@@ -171,6 +171,3 @@ coordT *qh_sethalfspace_all(int dim, int count, coordT *halfspaces, pointT *feas
 pointT *qh_voronoi_center(int dim, setT *points);
 
 #endif /* qhDEFgeom */
-
-
-

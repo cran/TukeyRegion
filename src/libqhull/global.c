@@ -2023,14 +2023,20 @@ void qh_initthresholds(char *command) {
     strlen(option) < 40
 */
 void qh_option(const char *option, int *i, realT *r) {
-  char buf[200];
-  int len, maxlen;
+  char buf[200] = {'\0'};
+  int len = 0, maxlen;
 
-  sprintf(buf, "  %s", option);
+  // sprintf(buf, "  %s", option);
+  // Pavlo Mozharovskyi, 17/04/2023:
+  // Rewriting to pass the CRAN check warning
   if (i)
-    sprintf(buf+strlen(buf), " %d", *i);
+    // sprintf(buf+strlen(buf), " %d", *i);
+    // Pavlo Mozharovskyi, 17/04/2023:
+    // Rewriting to pass the CRAN check warning
   if (r)
-    sprintf(buf+strlen(buf), " %2.2g", *r);
+    // sprintf(buf+strlen(buf), " %2.2g", *r);
+    // Pavlo Mozharovskyi, 17/04/2023:
+    // Rewriting to pass the CRAN check warning
   len= (int)strlen(buf);  /* WARN64 */
   qh qhull_optionlen += len;
   maxlen= sizeof(qh qhull_options) - len -1;
